@@ -1,4 +1,5 @@
-[200~# Node dependencies
+# Node dependencies
+lib/firebase.ts
 node_modules/
 npm-debug.log*
 yarn-debug.log*
