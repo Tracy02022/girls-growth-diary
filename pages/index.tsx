@@ -1,10 +1,7 @@
 export default function Home() {
   return (
-    <main className="min-h-screen flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-blue-600">
-        欢迎来到女生成长日记 🌸
-      </h1>
-    </main>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <h1 className="text-3xl font-bold text-red-600">🎉 Tailwind CSS 已成功启用！</h1>
+    </div>
   )
 }
-
