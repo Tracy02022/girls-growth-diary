@@ -33,6 +33,7 @@ export default function WishesPage() {
   const [description, setDescription] = useState('')
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0])
   const [selectedIds, setSelectedIds] = useState<string[]>([])
+  const [error, setError] = useState('')
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -65,7 +66,24 @@ export default function WishesPage() {
   }
 
   const addWish = async () => {
-    if (!userId || !title) return
+    if (!userId) return
+  
+    if (!title.trim()) {
+      setError('标题不能为空')
+      return
+    }
+
+    const selectedDate = new Date(targetDate)
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (selectedDate < today) {
+      setError('目标日期不能是过去的日期')
+      return
+    }
+  
+    // 一切通过，清空错误提示
+    setError('')
+  
     const newWish: Wish = {
       title,
       description,
@@ -74,12 +92,14 @@ export default function WishesPage() {
       isDone: false,
       userId,
     }
+  
     await addDoc(collection(db, 'wishes'), newWish)
     setTitle('')
     setDescription('')
     setTargetDate(new Date().toISOString().split('T')[0])
     loadWishes(userId)
   }
+  
 
   const toggleSelected = (id: string) => {
     setSelectedIds((prev) =>
@@ -186,6 +206,7 @@ export default function WishesPage() {
           maxLength={20}
           className="w-full border px-3 py-2 rounded"
         />
+        {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
         <p className="text-sm text-gray-400 text-right">{title.length}/20</p>
         <textarea
           placeholder="愿望描述（可选）"
