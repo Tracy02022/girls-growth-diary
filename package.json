@@ -1,5 +1,5 @@
 {
-  "name": "wish-firebase-demo",
+  "name": "girls-growth-diary",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,9 +8,10 @@
     "start": "next start"
   },
   "dependencies": {
+    "@uiw/react-heat-map": "^1.4.7",
     "chart.js": "^4.4.9",
     "date-fns": "latest",
-    "firebase": "^9.6.1",
+    "firebase": "^11.9.0",
     "next": "latest",
     "react": "latest",
     "react-chartjs-2": "^5.3.0",
