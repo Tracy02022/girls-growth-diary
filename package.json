@@ -8,10 +8,12 @@
     "start": "next start"
   },
   "dependencies": {
+    "chart.js": "^4.4.9",
     "date-fns": "latest",
     "firebase": "^9.6.1",
     "next": "latest",
     "react": "latest",
+    "react-chartjs-2": "^5.3.0",
     "react-dom": "latest"
   },
   "devDependencies": {
