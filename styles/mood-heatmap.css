@@ -1,0 +1,51 @@
+/* 图表区域，作用于 rect 元素 */
+.react-calendar-heatmap rect.color-happy {
+  fill: #ea6624;
+}
+.react-calendar-heatmap rect.color-calm {
+  fill: #ca8a56;
+}
+.react-calendar-heatmap rect.color-sad {
+  fill: #3080c1;
+}
+.react-calendar-heatmap rect.color-angry {
+  fill: #370e8a;
+}
+.react-calendar-heatmap rect.color-anxious {
+  fill: #353c7b;
+}
+.react-calendar-heatmap rect.color-excited {
+  fill: #ef310f;
+}
+.react-calendar-heatmap rect.color-tired {
+  fill: #271f04;
+}
+.react-calendar-heatmap rect.color-empty {
+  fill: #e5e7eb;
+}
+
+/* 图例区域，作用于 div/span 等，需要用 background-color */
+.color-happy {
+  background-color: #ea6624;
+}
+.color-calm {
+  background-color: #ca8a56;
+}
+.color-sad {
+  background-color: #3080c1;
+}
+.color-angry {
+  background-color: #370e8a;
+}
+.color-anxious {
+  background-color: #353c7b;
+}
+.color-excited {
+  background-color: #ef310f;
+}
+.color-tired {
+  background-color: #271f04;
+}
+.color-empty {
+  background-color: #e5e7eb;
+}

@@ -108,6 +108,7 @@ export default function ChartsPage() {
       ) : (
         <Line data={chartData} options={chartOptions} />
       )}
+      <a href="/mood-heatmap" className="text-blue-600 hover:underline">查看心情热力图</a>
     </div>
   )
 }
