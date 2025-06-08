@@ -116,11 +116,29 @@ export default function FatLogPage() {
         />
         <div className="text-right mb-2 text-sm">
           <button
-            onClick={() => setUnit(unit === 'lb' ? 'kg' : 'lb')}
+            onClick={() => {
+              const weightVal = parseFloat(weight)
+              if (!isNaN(weightVal)) {
+                if (unit === 'lb') {
+                  // lb -> kg
+                  const converted = weightVal / 2.20462
+                  setWeight(converted.toFixed(1))
+                  setUnit('kg')
+                } else {
+                  // kg -> lb
+                  const converted = weightVal * 2.20462
+                  setWeight(converted.toFixed(1))
+                  setUnit('lb')
+                }
+              } else {
+                setUnit(unit === 'lb' ? 'kg' : 'lb') // 没有输入值时只切单位
+              }
+            }}
             className="text-blue-600 underline"
           >
             切换为 {unit === 'lb' ? '公斤' : '磅'}
           </button>
+
         </div>
         <select
           value={mood}
