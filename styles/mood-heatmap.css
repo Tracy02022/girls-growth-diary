@@ -1,3 +1,5 @@
+
+
 /* 图表区域，作用于 rect 元素 */
 .react-calendar-heatmap rect.color-happy {
   fill: #ea6624;
@@ -48,4 +50,25 @@
 }
 .color-empty {
   background-color: #e5e7eb;
+}
+
+
+.react-calendar-heatmap text {
+  font-size: 10px;
+  fill: #999;
+}
+
+.react-calendar-heatmap .weekday {
+  display: block !important; /* 强制显示所有星期标签 */
+}
+
+.react-calendar-heatmap .react-calendar-heatmap-weekday-labels {
+  display: grid !important;
+  grid-template-rows: repeat(7, 1fr); /* 7 rows for 7 days */
+}
+
+.react-calendar-heatmap .react-calendar-heatmap-weekday-labels text {
+  font-size: 10px;
+  fill: #999;
+  transform: translateX(0); /* 避免偏移 */
 }
