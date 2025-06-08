@@ -4,6 +4,7 @@ import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import { Tooltip } from 'react-tooltip'
+import { useRouter } from 'next/router'
 
 interface FatLog {
     id?: string
@@ -68,6 +69,8 @@ export default function MoodHeatmapPage() {
         mood: log.mood,
     }))
 
+    const router = useRouter()
+
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
             <h1 className="text-2xl font-bold mb-6 text-center">💭 心情热力图</h1>
@@ -89,6 +92,12 @@ export default function MoodHeatmapPage() {
                         }
                         : {}
                 }
+                onClick={(value) => {
+                    console.log('clicked value:', value)
+                    if (value?.date) {
+                      router.push(`/log/${value.date}`)
+                    }
+                  }}
             />
             <Tooltip id="heatmap-tooltip" />
             {/* 图例区域 */}
