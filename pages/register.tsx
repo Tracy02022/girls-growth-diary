@@ -17,47 +17,47 @@ export default function RegisterPage() {
       await createUserWithEmailAndPassword(auth, email, password)
       router.push('/wishes')
     } catch (err: any) {
-      setError('注册失败，请检查信息是否填写正确')
+      setError('Registration failed. Please check your information.')
     }
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-200 via-pink-100 to-yellow-100">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-purple-900 via-pink-700 to-yellow-500">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
-        className="bg-white/30 backdrop-blur-lg rounded-2xl shadow-lg p-8 w-full max-w-sm border border-white/40"
+        className="bg-white/20 backdrop-blur-lg rounded-2xl shadow-lg p-8 w-full max-w-sm border border-white/30"
       >
-        <h1 className="text-3xl font-bold text-center text-gray-800 mb-2">加入我们！</h1>
-        <p className="text-center text-sm text-gray-600 mb-6">记录每一天的成长轨迹</p>
+        <h1 className="text-3xl font-bold text-center text-white mb-2">Join Us 💜</h1>
+        <p className="text-center text-sm text-white/80 mb-6">Create your own growth diary account</p>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <input
           type="email"
-          placeholder="邮箱"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg mb-3 border border-white/60 bg-white/40 placeholder-gray-600 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-300"
+          className="w-full px-4 py-2 rounded-lg mb-3 border border-white/40 bg-white/30 placeholder-white/70 text-white focus:outline-none focus:ring-2 focus:ring-purple-300"
         />
         <input
           type="password"
-          placeholder="密码"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-2 rounded-lg mb-5 border border-white/60 bg-white/40 placeholder-gray-600 text-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-300"
+          className="w-full px-4 py-2 rounded-lg mb-5 border border-white/40 bg-white/30 placeholder-white/70 text-white focus:outline-none focus:ring-2 focus:ring-purple-300"
         />
         <motion.button
           whileTap={{ scale: 0.95 }}
           whileHover={{ scale: 1.02 }}
           onClick={handleRegister}
-          className="w-full py-2 rounded-lg bg-purple-500 text-white font-semibold hover:bg-purple-600 transition-all"
+          className="w-full py-2 rounded-lg bg-purple-600 text-white font-semibold hover:bg-purple-700 transition-all"
         >
-          注册
+          Register
         </motion.button>
-        <p className="text-sm text-center text-gray-700 mt-5">
-          已有账号？{' '}
-          <a href="/login" className="text-purple-600 underline hover:text-purple-800">
-            点击登录
+        <p className="text-sm text-center text-white mt-5">
+          Already have an account?{' '}
+          <a href="/login" className="text-blue-200 underline hover:text-blue-400">
+            Login here
           </a>
         </p>
       </motion.div>

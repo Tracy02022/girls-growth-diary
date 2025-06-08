@@ -20,7 +20,9 @@
     "react-chartjs-2": "^5.3.0",
     "react-dom": "latest",
     "react-tooltip": "^5.28.1",
-    "tailwindcss-filters": "^3.0.0"
+    "react-tsparticles": "^2.12.2",
+    "tailwindcss-filters": "^3.0.0",
+    "tsparticles": "^3.8.1"
   },
   "devDependencies": {
     "@types/react": "19.1.6",

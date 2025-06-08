@@ -2,8 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-gray-50 text-gray-800;
-  font-family: 'Helvetica Neue', sans-serif;
+.animated-gradient {
+  background: linear-gradient(-45deg, #fbc2eb, #a6c1ee, #fcd5ce, #c1f0f6);
+  background-size: 400% 400%;
+  animation: gradientMove 15s ease infinite;
 }
 
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
