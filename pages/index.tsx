@@ -1,12 +1,16 @@
 import Link from 'next/link'
+import { Quicksand, Dancing_Script } from 'next/font/google'
+
+const quicksand = Quicksand({ subsets: ['latin'], weight: ['400', '600', '700'] })
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 to-rose-200">
+    <div className={`min-h-screen bg-gradient-to-br from-pink-100 to-rose-200 ${quicksand.className}`}>
       {/* Navigation Bar */}
       <nav className="w-full bg-white shadow-md p-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-pink-700">Girls Growth Diary</h1>
-        <div className="space-x-4 text-base">
+        <h1 className={`${dancingScript.className} text-2xl text-pink-700`}>Girls Growth Diary</h1>
+        <div className="space-x-4 text-base font-semibold">
           <Link href="/wishes" className="text-pink-600 hover:underline">Wish List</Link>
           <Link href="/log" className="text-pink-600 hover:underline">Body Fat Log</Link>
           <Link href="/mood-heatmap" className="text-pink-600 hover:underline">Mood Heatmap</Link>
