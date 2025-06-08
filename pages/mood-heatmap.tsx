@@ -76,13 +76,18 @@ export default function MoodHeatmapPage() {
                 endDate={endDate}
                 values={values}
                 showWeekdayLabels
-                weekdayLabels={['日', '一', '二', '三', '四', '五', '六']} 
+                weekdayLabels={['日', '一', '二', '三', '四', '五', '六']}
                 classForValue={(value) => {
                     if (!value || !value.mood) return 'color-empty'
                     return moodColorMap[value.mood] || 'color-empty'
                 }}
                 tooltipDataAttrs={(value) =>
-                    value?.date ? { 'data-tip': `${value.date} ${value.mood || ''}` } : {}
+                    value?.date
+                        ? {
+                            'data-tooltip-id': 'heatmap-tooltip',
+                            'data-tooltip-content': `${value.date} ${value.mood || ''}`,
+                        }
+                        : {}
                 }
             />
             <Tooltip id="heatmap-tooltip" />
