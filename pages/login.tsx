@@ -22,7 +22,7 @@ export default function LoginPage() {
     setError('')
     try {
       await signInWithEmailAndPassword(auth, email, password)
-      router.push('/wishes')
+      router.push('/')
     } catch (err: any) {
       setError('Login failed. Please check your credentials.')
     }

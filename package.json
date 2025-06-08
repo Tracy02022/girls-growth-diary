@@ -14,7 +14,7 @@
     "date-fns": "latest",
     "firebase": "^11.9.0",
     "framer-motion": "^12.16.0",
-    "next": "latest",
+    "next": "^15.3.3",
     "react": "latest",
     "react-calendar-heatmap": "^1.10.0",
     "react-chartjs-2": "^5.3.0",

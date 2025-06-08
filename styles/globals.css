@@ -1,9 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
 
 .animated-gradient {
   background: linear-gradient(135deg, #c3aed6, #f5c7f7, #a0e9ff, #fbc2eb);
   background-size: 400% 400%;
   animation: gradient-flow 15s ease infinite;
 }
+
