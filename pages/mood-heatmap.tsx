@@ -25,6 +25,7 @@ const moodColorMap: Record<string, string> = {
     '😩': 'color-anxious',
     '🥳': 'color-excited',
     '😴': 'color-tired',
+    '😞': 'color-down',
 }
 
 export default function MoodHeatmapPage() {
@@ -68,6 +69,7 @@ export default function MoodHeatmapPage() {
         count: 1,
         mood: log.mood,
     }))
+    console.log('Fetched logs:', logs.map(l => l.date))
 
     const router = useRouter()
 

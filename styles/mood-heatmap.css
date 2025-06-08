@@ -25,6 +25,9 @@
 .react-calendar-heatmap rect.color-empty {
   fill: #e5e7eb;
 }
+.react-calendar-heatmap rect.color-down {
+  fill: #5a4f80; 
+}
 
 /* 图例区域，作用于 div/span 等，需要用 background-color */
 .color-happy {
@@ -50,6 +53,9 @@
 }
 .color-empty {
   background-color: #e5e7eb;
+}
+.color-down {
+  background-color: #5a4f80;
 }
 
 
