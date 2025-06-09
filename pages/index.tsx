@@ -8,15 +8,15 @@ const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
 export default function Home() {
   return (
     <div
-      className={`relative min-h-screen bg-gradient-to-br from-violet-100 via-purple-100 to-indigo-100 ${quicksand.className}`}
+    className={`relative min-h-screen bg-[#ede9f5] ${quicksand.className}`}
       style={{ backgroundImage: "url('/illustration-girl-diary.png')", backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'top center' }}
     >
       {/* Overlay for contrast */}
       <div className="absolute inset-0 bg-white bg-opacity-30 z-0"></div>
 
       {/* Navigation Bar */}
-      <nav className="w-full bg-transparent p-6 flex justify-between items-center relative z-10">
-        <h1 className={`${dancingScript.className} text-3xl text-purple-800`}>Girl Growth Diary</h1>
+      <nav className="w-full bg-transparent p-6 flex justify-between items-center gap-12 relative z-10">
+        <h1 className={`${dancingScript.className} text-7xl text-purple-800`}>Girl Growth Diary</h1>
         <div className="space-x-6 text-base font-semibold text-purple-700">
           <Link href="/">Home</Link>
           <Link href="/wishes">Wish List</Link>
