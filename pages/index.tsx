@@ -12,7 +12,7 @@ export default function Home() {
       style={{ backgroundImage: "url('/illustration-girl-diary.png')", backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'top center' }}
     >
       {/* Overlay for contrast */}
-      <div className="absolute inset-0 bg-white bg-opacity-70 z-0"></div>
+      <div className="absolute inset-0 bg-white bg-opacity-30 z-0"></div>
 
       {/* Navigation Bar */}
       <nav className="w-full bg-transparent p-6 flex justify-between items-center relative z-10">
@@ -33,7 +33,7 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-6xl">
           <Link href="/wishes">
             <div className="rounded-xl shadow-lg bg-white bg-opacity-90 p-6 hover:bg-violet-100 transition-all text-center flex flex-col justify-center items-center">
-              <Image src="/icons/wish-list.png" alt="Wish List Icon" width={50} height={50} />
+              <Image src="/icons/wish-list.png" alt="Wish List Icon" width={64} height={64} />
               <h3 className="text-xl font-bold text-purple-700 mt-4">Wish List</h3>
               <p className="mt-2 text-sm text-gray-600">Record your dreams and goals</p>
             </div>
@@ -41,7 +41,7 @@ export default function Home() {
 
           <Link href="/log">
             <div className="rounded-xl shadow-lg bg-white bg-opacity-90 p-6 hover:bg-violet-100 transition-all text-center flex flex-col justify-center items-center">
-              <Image src="/icons/body-fat-log.png" alt="Body Fat Log Icon" width={50} height={50} />
+              <Image src="/icons/body-fat-log.png" alt="Body Fat Log Icon" width={64} height={64} />
               <h3 className="text-xl font-bold text-purple-700 mt-4">Body Fat Log</h3>
               <p className="mt-2 text-sm text-gray-600">Track your body fat changes and progress</p>
             </div>
@@ -49,7 +49,7 @@ export default function Home() {
 
           <Link href="/mood-heatmap">
             <div className="rounded-xl shadow-lg bg-white bg-opacity-90 p-6 hover:bg-violet-100 transition-all text-center flex flex-col justify-center items-center">
-              <Image src="/icons/mood-heatmap.png" alt="Mood Heatmap Icon" width={50} height={50} />
+              <Image src="/icons/mood-heatmap.png" alt="Mood Heatmap Icon" width={64} height={64} />
               <h3 className="text-xl font-bold text-purple-700 mt-4">Mood Heatmap</h3>
               <p className="mt-2 text-sm text-gray-600">Visualize your daily mood patterns</p>
             </div>
