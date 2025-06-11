@@ -13,6 +13,10 @@ import {
   Legend,
   Tooltip,
 } from 'chart.js'
+import { Quicksand, Dancing_Script } from 'next/font/google'
+
+const quicksand = Quicksand({ subsets: ['latin'] })
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
 
 ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Legend, Tooltip)
 
@@ -31,7 +35,8 @@ export default function ChartsPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-  ];
+  ]
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -70,7 +75,7 @@ export default function ChartsPage() {
     labels: dates,
     datasets: [
       {
-        label: '体重（磅）',
+        label: 'Weight (lbs)',
         data: weights,
         borderColor: 'rgba(54, 162, 235, 1)',
         backgroundColor: 'rgba(54, 162, 235, 0.2)',
@@ -78,7 +83,7 @@ export default function ChartsPage() {
         fill: false,
       },
       {
-        label: '体脂率（%）',
+        label: 'Body Fat (%)',
         data: bodyFats,
         borderColor: 'rgba(255, 99, 132, 1)',
         backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -107,7 +112,9 @@ export default function ChartsPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div
+      className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
+    >
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
         {navItems.map((item) => (
           <a
@@ -119,13 +126,27 @@ export default function ChartsPage() {
           </a>
         ))}
       </nav>
-      <h1 className="text-2xl font-bold mb-6 text-center">📊 体脂 / 体重趋势图</h1>
-      {logs.length === 0 ? (
-        <p className="text-center text-gray-500">暂无记录，请先添加日志</p>
-      ) : (
-        <Line data={chartData} options={chartOptions} />
-      )}
-      <a href="/mood-heatmap" className="text-blue-600 hover:underline">查看心情热力图</a>
+
+      <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
+        📊 Body Fat / Weight Trend
+      </h1>
+
+      <div className="max-w-3xl mx-auto">
+        {logs.length === 0 ? (
+          <p className="text-center text-gray-500">No logs found. Please add entries first.</p>
+        ) : (
+          <Line data={chartData} options={chartOptions} />
+        )}
+      </div>
+
+      <div className="text-center mt-10">
+        <a
+          href="/mood-heatmap"
+          className="text-purple-600 underline text-sm hover:text-purple-800"
+        >
+          🔥 View Mood Heatmap
+        </a>
+      </div>
     </div>
   )
 }
