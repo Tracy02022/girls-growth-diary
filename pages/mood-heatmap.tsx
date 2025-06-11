@@ -1,11 +1,10 @@
-// pages/mood-heatmap.tsx (Styled)
+// pages/mood-heatmap.tsx (Hover shows log details in tooltip)
 import { useEffect, useState } from 'react'
 import { db, auth } from '../lib/firebase'
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import { Tooltip } from 'react-tooltip'
-import { useRouter } from 'next/router'
 import { Quicksand, Dancing_Script } from 'next/font/google'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
@@ -36,15 +35,13 @@ const moodColorMap: Record<string, string> = {
 export default function MoodHeatmapPage() {
   const [logs, setLogs] = useState<FatLog[]>([])
   const [userId, setUserId] = useState<string | null>(null)
-  const router = useRouter()
-
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Wishes', href: '/wishes' },
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-  ]
+  ];
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -66,7 +63,7 @@ export default function MoodHeatmapPage() {
         const entries: FatLog[] = []
         snapshot.forEach((doc) => {
           const data = doc.data() as FatLog
-          if (data.mood && data.date) entries.push(data)
+          if (data.mood && data.date) entries.push({ ...data, id: doc.id })
         })
         setLogs(entries)
       }
@@ -85,7 +82,9 @@ export default function MoodHeatmapPage() {
   }))
 
   return (
-    <div className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}>
+    <div
+      className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
+    >
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
         {navItems.map((item) => (
           <a
@@ -97,46 +96,48 @@ export default function MoodHeatmapPage() {
           </a>
         ))}
       </nav>
-
-      <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
+      <h1
+        className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}
+      >
         💭 Mood Heatmap
       </h1>
-
-      <div className="max-w-3xl mx-auto">
-        <CalendarHeatmap
-          startDate={startDate}
-          endDate={endDate}
-          values={values}
-          showWeekdayLabels
-          weekdayLabels={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
-          classForValue={(value) => {
-            if (!value || !value.mood) return 'color-empty'
-            return moodColorMap[value.mood] || 'color-empty'
-          }}
-          tooltipDataAttrs={(value) =>
-            value?.date
-              ? {
-                  'data-tooltip-id': 'heatmap-tooltip',
-                  'data-tooltip-content': `${value.date} ${value.mood || ''}`,
-                }
-              : {}
-          }
-          onClick={(value) => {
-            if (value?.date) router.push(`/log/${value.date}`)
-          }}
-        />
-        <Tooltip id="heatmap-tooltip" />
-
-        <div className="mt-6 text-sm text-center">
-          <p className="mb-2 text-gray-600">Mood Legend:</p>
-          <div className="flex justify-center flex-wrap gap-4">
-            {Object.entries(moodColorMap).map(([emoji, colorClass]) => (
-              <div key={emoji} className="flex items-center gap-1">
-                <div className={`w-4 h-4 rounded ${colorClass}`}></div>
-                <span>{emoji}</span>
-              </div>
-            ))}
-          </div>
+      <CalendarHeatmap
+        startDate={startDate}
+        endDate={endDate}
+        values={values}
+        showWeekdayLabels
+        weekdayLabels={["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]}
+        classForValue={(value) => {
+          if (!value || !value.mood) return 'color-empty'
+          return moodColorMap[value.mood] || 'color-empty'
+        }}
+        tooltipDataAttrs={(value) => {
+          const found = logs.find((log) => log.date === value.date)
+          return found
+            ? {
+                'data-tooltip-id': 'heatmap-tooltip',
+                'data-tooltip-html': `
+                  <strong>${found.date}</strong><br/>
+                  Mood: ${found.mood}<br/>
+                  Body Fat: ${found.bodyFat}%<br/>
+                  Weight: ${found.weight} lbs<br/>
+                  Note: ${found.note || '—'}
+                `,
+              }
+            : {}
+        }}
+        onClick={() => {}}
+      />
+      <Tooltip id="heatmap-tooltip" html={true} />
+      <div className="mt-6 text-sm text-center text-gray-600">
+        <p className="mb-2">Mood Legend:</p>
+        <div className="flex justify-center flex-wrap gap-4">
+          {Object.entries(moodColorMap).map(([emoji, colorClass]) => (
+            <div key={emoji} className="flex items-center gap-1">
+              <div className={`w-4 h-4 rounded ${colorClass}`}></div>
+              <span>{emoji}</span>
+            </div>
+          ))}
         </div>
       </div>
     </div>
