@@ -1,4 +1,4 @@
-// pages/mood-heatmap.tsx (Hover shows log details in tooltip)
+// pages/mood-heatmap.tsx (Hover shows log details + click opens detail page)
 import { useEffect, useState } from 'react'
 import { db, auth } from '../lib/firebase'
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
@@ -6,6 +6,7 @@ import { onAuthStateChanged } from 'firebase/auth'
 import CalendarHeatmap from 'react-calendar-heatmap'
 import { Tooltip } from 'react-tooltip'
 import { Quicksand, Dancing_Script } from 'next/font/google'
+import { useRouter } from 'next/router'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -35,13 +36,15 @@ const moodColorMap: Record<string, string> = {
 export default function MoodHeatmapPage() {
   const [logs, setLogs] = useState<FatLog[]>([])
   const [userId, setUserId] = useState<string | null>(null)
+  const router = useRouter()
+
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Wishes', href: '/wishes' },
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-  ];
+  ]
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
@@ -126,7 +129,11 @@ export default function MoodHeatmapPage() {
               }
             : {}
         }}
-        onClick={() => {}}
+        onClick={(value) => {
+          if (value?.date) {
+            router.push(`/log/${value.date}`)
+          }
+        }}
       />
       <Tooltip id="heatmap-tooltip" html={true} />
       <div className="mt-6 text-sm text-center text-gray-600">
