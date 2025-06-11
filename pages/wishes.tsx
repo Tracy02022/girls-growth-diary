@@ -1,4 +1,4 @@
-// pages/wishes.tsx
+// pages/wishes.tsx (enhanced with animation)
 import { useEffect, useState } from 'react'
 import {
   collection,
@@ -16,6 +16,7 @@ import { db, auth } from '../lib/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { differenceInCalendarDays, parseISO } from 'date-fns'
 import { Quicksand, Dancing_Script } from 'next/font/google'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -148,8 +149,12 @@ export default function WishesPage() {
     }
 
     return (
-      <div
+      <motion.div
         key={wish.id}
+        layout
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -10 }}
         className="border rounded-2xl p-4 bg-white shadow-md flex items-start gap-2 relative"
       >
         <input
@@ -180,7 +185,7 @@ export default function WishesPage() {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     )
   }
 
@@ -212,7 +217,7 @@ export default function WishesPage() {
           onChange={(e) => setDescription(e.target.value)}
           maxLength={100}
           className="w-full border px-3 py-2 rounded-xl"
-        ></textarea>
+        />
         <p className="text-sm text-gray-400 text-right">{description.length}/100</p>
         <input
           type="date"
@@ -244,29 +249,53 @@ export default function WishesPage() {
           </div>
         )}
 
+
+        {/* Collapsible lists with animation */}
         <div className="mt-10 space-y-6">
           <div>
-            <h2 className="text-xl font-semibold mb-2 cursor-pointer" onClick={() => setShowPending(!showPending)}>
-              🟣 Pending Wishes {showPending ? '▼' : '▶'}
+            <h2
+              className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
+              onClick={() => setShowPending(!showPending)}
+            >
+              <span className={`transform transition-transform ${showPending ? 'rotate-90' : ''}`}>▶</span>
+              🟣 Pending Wishes
             </h2>
-            {showPending && (
-              <div className="max-h-[450px] overflow-y-auto space-y-4">
-                {uncompleted.length === 0 && <p className="text-gray-500">No pending wishes</p>}
-                {uncompleted.map(renderWish)}
-              </div>
-            )}
+            <AnimatePresence>
+              {showPending && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="max-h-[450px] overflow-y-auto space-y-4"
+                >
+                  {uncompleted.length === 0 && <p className="text-gray-500">No pending wishes</p>}
+                  {uncompleted.map(renderWish)}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold mb-2 cursor-pointer" onClick={() => setShowCompleted(!showCompleted)}>
-              ✅ Completed Wishes {showCompleted ? '▼' : '▶'}
+            <h2
+              className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
+              onClick={() => setShowCompleted(!showCompleted)}
+            >
+              <span className={`transform transition-transform ${showCompleted ? 'rotate-90' : ''}`}>▶</span>
+              ✅ Completed Wishes
             </h2>
-            {showCompleted && (
-              <div className="max-h-[450px] overflow-y-auto space-y-4">
-                {completed.length === 0 && <p className="text-gray-500">No completed wishes</p>}
-                {completed.map(renderWish)}
-              </div>
-            )}
+            <AnimatePresence>
+              {showCompleted && (
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{ height: 'auto', opacity: 1 }}
+                  exit={{ height: 0, opacity: 0 }}
+                  className="max-h-[450px] overflow-y-auto space-y-4"
+                >
+                  {completed.length === 0 && <p className="text-gray-500">No completed wishes</p>}
+                  {completed.map(renderWish)}
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
       </div>
