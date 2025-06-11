@@ -38,6 +38,8 @@ export default function WishesPage() {
   const [targetDate, setTargetDate] = useState<string>(new Date().toISOString().split('T')[0])
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [error, setError] = useState('')
+  const [showPending, setShowPending] = useState(true)
+  const [showCompleted, setShowCompleted] = useState(true)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -244,15 +246,27 @@ export default function WishesPage() {
 
         <div className="mt-10 space-y-6">
           <div>
-            <h2 className="text-xl font-semibold mb-2">🟣 Pending Wishes</h2>
-            {uncompleted.length === 0 && <p className="text-gray-500">No pending wishes</p>}
-            {uncompleted.map(renderWish)}
+            <h2 className="text-xl font-semibold mb-2 cursor-pointer" onClick={() => setShowPending(!showPending)}>
+              🟣 Pending Wishes {showPending ? '▼' : '▶'}
+            </h2>
+            {showPending && (
+              <div className="max-h-[450px] overflow-y-auto space-y-4">
+                {uncompleted.length === 0 && <p className="text-gray-500">No pending wishes</p>}
+                {uncompleted.map(renderWish)}
+              </div>
+            )}
           </div>
 
           <div>
-            <h2 className="text-xl font-semibold mb-2">✅ Completed Wishes</h2>
-            {completed.length === 0 && <p className="text-gray-500">No completed wishes</p>}
-            {completed.map(renderWish)}
+            <h2 className="text-xl font-semibold mb-2 cursor-pointer" onClick={() => setShowCompleted(!showCompleted)}>
+              ✅ Completed Wishes {showCompleted ? '▼' : '▶'}
+            </h2>
+            {showCompleted && (
+              <div className="max-h-[450px] overflow-y-auto space-y-4">
+                {completed.length === 0 && <p className="text-gray-500">No completed wishes</p>}
+                {completed.map(renderWish)}
+              </div>
+            )}
           </div>
         </div>
       </div>
