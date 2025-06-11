@@ -1,4 +1,3 @@
-
 // pages/wishes.tsx
 import { useEffect, useState } from 'react'
 import {
@@ -16,6 +15,10 @@ import {
 import { db, auth } from '../lib/firebase'
 import { onAuthStateChanged } from 'firebase/auth'
 import { differenceInCalendarDays, parseISO } from 'date-fns'
+import { Quicksand, Dancing_Script } from 'next/font/google'
+
+const quicksand = Quicksand({ subsets: ['latin'] })
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
 
 interface Wish {
   id?: string
@@ -68,22 +71,18 @@ export default function WishesPage() {
 
   const addWish = async () => {
     if (!userId) return
-
     if (!title.trim()) {
-      setError('标题不能为空')
+      setError('Title cannot be empty')
       return
     }
-
     const selectedDate = new Date(targetDate)
     const today = new Date()
     today.setHours(0, 0, 0, 0)
     if (selectedDate < today) {
-      setError('目标日期不能是过去的日期')
+      setError('Target date cannot be in the past')
       return
     }
-
     setError('')
-
     const newWish: Wish = {
       title,
       description,
@@ -92,7 +91,6 @@ export default function WishesPage() {
       isDone: false,
       userId,
     }
-
     await addDoc(collection(db, 'wishes'), newWish)
     setTitle('')
     setDescription('')
@@ -142,19 +140,15 @@ export default function WishesPage() {
     const daysLeft = differenceInCalendarDays(parseISO(wish.targetDate), new Date())
     let countdownText = ''
     if (!wish.isDone) {
-      if (daysLeft > 0) {
-        countdownText = `还有 ${daysLeft} 天`
-      } else if (daysLeft === 0) {
-        countdownText = `就是今天！`
-      } else {
-        countdownText = `已过去 ${Math.abs(daysLeft)} 天`
-      }
+      if (daysLeft > 0) countdownText = `${daysLeft} days left`
+      else if (daysLeft === 0) countdownText = `Due today!`
+      else countdownText = `${Math.abs(daysLeft)} days ago`
     }
 
     return (
       <div
         key={wish.id}
-        className="border rounded p-4 bg-white shadow flex items-start gap-2 relative"
+        className="border rounded-2xl p-4 bg-white shadow-md flex items-start gap-2 relative"
       >
         <input
           type="checkbox"
@@ -168,18 +162,18 @@ export default function WishesPage() {
           </div>
           {wish.description && <div className="text-sm text-gray-600">{wish.description}</div>}
           <div className="text-sm text-gray-500 mt-1">
-            🎯 目标日期：{wish.targetDate}
-            <span className="ml-2 text-blue-500"> {countdownText}</span>
+            🎯 Target date: {wish.targetDate}
+            <span className="ml-2 text-purple-500">{countdownText}</span>
           </div>
           <div className="flex items-center mb-2 justify-between">
-            <div className="flex gap-2 text-sm text-right text-blue-600">
+            <div className="flex gap-2 text-sm text-right text-purple-600">
               {!wish.isDone && (
                 <button onClick={() => markWishDone(wish.id!)} className="hover:underline">
-                  完成
+                  Mark Done
                 </button>
               )}
               <button onClick={() => deleteWish(wish.id!)} className="text-red-600 hover:underline">
-                删除
+                Delete
               </button>
             </div>
           </div>
@@ -192,70 +186,74 @@ export default function WishesPage() {
   const completed = wishes.filter((w) => w.isDone)
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-center">🌠 愿望清单</h1>
+    <div
+      className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
+    >
+      <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
+        🌠 Wish List
+      </h1>
 
-      <div className="space-y-4">
+      <div className="max-w-xl mx-auto space-y-4">
         <input
           type="text"
-          placeholder="愿望标题"
+          placeholder="Wish Title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           maxLength={20}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded-xl"
         />
         {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
         <p className="text-sm text-gray-400 text-right">{title.length}/20</p>
         <textarea
-          placeholder="愿望描述（可选）"
+          placeholder="Description (optional)"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           maxLength={100}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded-xl"
         ></textarea>
         <p className="text-sm text-gray-400 text-right">{description.length}/100</p>
         <input
           type="date"
           value={targetDate}
           onChange={(e) => setTargetDate(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded-xl"
         />
         <button
           onClick={addWish}
-          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+          className="w-full bg-purple-600 text-white py-2 rounded-xl hover:bg-purple-700"
         >
-          添加愿望
+          Add Wish
         </button>
-      </div>
 
-      {selectedIds.length > 0 && (
-        <div className="flex gap-4 mt-6">
-          <button
-            onClick={markSelectedDone}
-            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-          >
-            完成选中
-          </button>
-          <button
-            onClick={deleteSelected}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-          >
-            删除选中
-          </button>
-        </div>
-      )}
+        {selectedIds.length > 0 && (
+          <div className="flex gap-4 mt-6">
+            <button
+              onClick={markSelectedDone}
+              className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600"
+            >
+              Mark Selected Done
+            </button>
+            <button
+              onClick={deleteSelected}
+              className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600"
+            >
+              Delete Selected
+            </button>
+          </div>
+        )}
 
-      <div className="mt-10 space-y-6">
-        <div>
-          <h2 className="text-xl font-semibold mb-2">🟢 未完成愿望</h2>
-          {uncompleted.length === 0 && <p className="text-gray-500">暂无未完成愿望</p>}
-          {uncompleted.map(renderWish)}
-        </div>
+        <div className="mt-10 space-y-6">
+          <div>
+            <h2 className="text-xl font-semibold mb-2">🟣 Pending Wishes</h2>
+            {uncompleted.length === 0 && <p className="text-gray-500">No pending wishes</p>}
+            {uncompleted.map(renderWish)}
+          </div>
 
-        <div>
-          <h2 className="text-xl font-semibold mb-2">✅ 已完成愿望</h2>
-          {completed.length === 0 && <p className="text-gray-500">暂无已完成愿望</p>}
-          {completed.map(renderWish)}
+          <div>
+            <h2 className="text-xl font-semibold mb-2">✅ Completed Wishes</h2>
+            {completed.length === 0 && <p className="text-gray-500">No completed wishes</p>}
+            {completed.map(renderWish)}
+          </div>
         </div>
       </div>
     </div>
