@@ -1,12 +1,13 @@
-// pages/charts.tsx
+// pages/charts.tsx (Enhanced with unit toggle + bar/line switch)
 import { useEffect, useState } from 'react'
 import { db, auth } from '../lib/firebase'
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
-import { Line } from 'react-chartjs-2'
+import { Line, Bar } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
   LineElement,
+  BarElement,
   PointElement,
   CategoryScale,
   LinearScale,
@@ -18,7 +19,7 @@ import { Quicksand, Dancing_Script } from 'next/font/google'
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
 
-ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Legend, Tooltip)
+ChartJS.register(LineElement, BarElement, PointElement, CategoryScale, LinearScale, Legend, Tooltip)
 
 interface LogEntry {
   date: string
@@ -29,6 +30,9 @@ interface LogEntry {
 export default function ChartsPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [logs, setLogs] = useState<LogEntry[]>([])
+  const [unit, setUnit] = useState<'lb' | 'kg'>('lb')
+  const [chartType, setChartType] = useState<'line' | 'bar'>('line')
+
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Wishes', href: '/wishes' },
@@ -68,27 +72,29 @@ export default function ChartsPage() {
   }
 
   const dates = logs.map((log) => log.date)
-  const weights = logs.map((log) => log.weight)
+  const weights = logs.map((log) =>
+    unit === 'kg' ? parseFloat((log.weight / 2.20462).toFixed(1)) : log.weight
+  )
   const bodyFats = logs.map((log) => log.bodyFat)
 
   const chartData = {
     labels: dates,
     datasets: [
       {
-        label: 'Weight (lbs)',
+        label: `Weight (${unit})`,
         data: weights,
         borderColor: 'rgba(54, 162, 235, 1)',
-        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+        backgroundColor: 'rgba(54, 162, 235, 0.3)',
         tension: 0.3,
-        fill: false,
+        fill: chartType === 'line' ? false : true,
       },
       {
         label: 'Body Fat (%)',
         data: bodyFats,
         borderColor: 'rgba(255, 99, 132, 1)',
-        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+        backgroundColor: 'rgba(255, 99, 132, 0.3)',
         tension: 0.3,
-        fill: false,
+        fill: chartType === 'line' ? false : true,
       },
     ],
   }
@@ -111,6 +117,8 @@ export default function ChartsPage() {
     },
   }
 
+  const ChartComponent = chartType === 'line' ? Line : Bar
+
   return (
     <div
       className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
@@ -127,15 +135,30 @@ export default function ChartsPage() {
         ))}
       </nav>
 
-      <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
+      <h1 className={`text-3xl font-bold mb-4 text-center text-purple-700 ${dancingScript.className}`}>
         📊 Body Fat / Weight Trend
       </h1>
+
+      <div className="max-w-3xl mx-auto mb-4 flex flex-col sm:flex-row justify-center items-center gap-4">
+        <button
+          onClick={() => setUnit(unit === 'lb' ? 'kg' : 'lb')}
+          className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 text-sm"
+        >
+          Switch to {unit === 'lb' ? 'kg' : 'lb'}
+        </button>
+        <button
+          onClick={() => setChartType(chartType === 'line' ? 'bar' : 'line')}
+          className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 text-sm"
+        >
+          Switch to {chartType === 'line' ? 'Bar' : 'Line'} Chart
+        </button>
+      </div>
 
       <div className="max-w-3xl mx-auto">
         {logs.length === 0 ? (
           <p className="text-center text-gray-500">No logs found. Please add entries first.</p>
         ) : (
-          <Line data={chartData} options={chartOptions} />
+          <ChartComponent data={chartData} options={chartOptions} />
         )}
       </div>
 
