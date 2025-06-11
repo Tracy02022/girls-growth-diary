@@ -1,8 +1,13 @@
+// pages/log/[date].tsx (Styled)
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { onAuthStateChanged } from 'firebase/auth'
 import { db, auth } from '../../lib/firebase'
 import { collection, query, where, getDocs } from 'firebase/firestore'
+import { Quicksand, Dancing_Script } from 'next/font/google'
+
+const quicksand = Quicksand({ subsets: ['latin'] })
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
 
 interface FatLog {
   id?: string
@@ -61,30 +66,40 @@ export default function LogDetailPage() {
   if (!log) return <p className="p-4 text-center">没有找到该日期的记录：{date}</p>
 
   return (
-    <div className="max-w-md mx-auto p-6">
-      <h1 className="text-2xl font-bold mb-4 text-center">📅 日志详情：{log.date}</h1>
-      <ul className="text-gray-700 space-y-3">
-        {log.mood && (
+    <div className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}>
+      <div className="max-w-md mx-auto bg-white rounded-2xl shadow p-6">
+        <h1 className={`text-2xl font-bold mb-4 text-center text-purple-700 ${dancingScript.className}`}>
+          📅 Log Detail: {log.date}
+        </h1>
+        <ul className="text-gray-700 space-y-4 text-sm">
+          {log.mood && (
+            <li>
+              <strong>Mood:</strong>
+              <span className="text-lg ml-2">{log.mood}</span>（{moodLabels[log.mood] || 'unknown'}）
+            </li>
+          )}
           <li>
-            <strong>心情：</strong>
-            <span className="text-lg">{log.mood}</span>（{moodLabels[log.mood] || '未知'}）
+            <strong>Body Fat:</strong> {log.bodyFat}%
           </li>
-        )}
-        <li>
-          <strong>体脂率：</strong> {log.bodyFat}%
-        </li>
-        <li>
-          <strong>体重：</strong> {log.weight} lbs
-        </li>
-        {log.note && (
           <li>
-            <strong>备注：</strong> {log.note}
+            <strong>Weight:</strong> {log.weight} lbs
           </li>
-        )}
-        <li>
-          <strong>记录时间：</strong> {new Date(log.createdAt).toLocaleString()}
-        </li>
-      </ul>
+          {log.note && (
+            <li>
+              <strong>Note:</strong> {log.note}
+            </li>
+          )}
+          <li>
+            <strong>Recorded at:</strong> {new Date(log.createdAt).toLocaleString()}
+          </li>
+        </ul>
+
+        <div className="mt-8 text-center">
+          <a href="/mood-heatmap" className="text-purple-600 underline text-sm hover:text-purple-800">
+            🔙 Back to Mood Heatmap
+          </a>
+        </div>
+      </div>
     </div>
   )
 }
