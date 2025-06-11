@@ -25,7 +25,13 @@ interface LogEntry {
 export default function ChartsPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [logs, setLogs] = useState<LogEntry[]>([])
-
+  const navItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Wishes', href: '/wishes' },
+    { name: 'Log', href: '/log' },
+    { name: 'Charts', href: '/charts' },
+    { name: 'Mood', href: '/mood-heatmap' },
+  ];
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
@@ -102,6 +108,17 @@ export default function ChartsPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 py-8">
+      <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
+        {navItems.map((item) => (
+          <a
+            key={item.name}
+            href={item.href}
+            className="hover:underline hover:text-purple-900"
+          >
+            {item.name}
+          </a>
+        ))}
+      </nav>
       <h1 className="text-2xl font-bold mb-6 text-center">📊 体脂 / 体重趋势图</h1>
       {logs.length === 0 ? (
         <p className="text-center text-gray-500">暂无记录，请先添加日志</p>

@@ -1,4 +1,4 @@
-// Enhanced FatLog Page with consistent style
+// Enhanced FatLog Page with collapsible history section
 import { useEffect, useState } from 'react'
 import { db, auth } from '../lib/firebase'
 import {
@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import { Quicksand, Dancing_Script } from 'next/font/google'
+import { motion, AnimatePresence } from 'framer-motion'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -35,6 +36,16 @@ export default function FatLogPage() {
   const [unit, setUnit] = useState<'lb' | 'kg'>('lb')
   const [mood, setMood] = useState('')
   const [note, setNote] = useState('')
+  const [showHistory, setShowHistory] = useState(true)
+
+  const navItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Wishes', href: '/wishes' },
+    { name: 'Log', href: '/log' },
+    { name: 'Charts', href: '/charts' },
+    { name: 'Mood', href: '/mood-heatmap' },
+  ];
+
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -95,6 +106,17 @@ export default function FatLogPage() {
     <div
       className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
     >
+      <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
+        {navItems.map((item) => (
+          <a
+            key={item.name}
+            href={item.href}
+            className="hover:underline hover:text-purple-900"
+          >
+            {item.name}
+          </a>
+        ))}
+      </nav>
       <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
         📉 Body Fat Log
       </h1>
@@ -173,19 +195,51 @@ export default function FatLogPage() {
         </button>
       </div>
 
-      <div className="mt-10 max-w-xl mx-auto space-y-4">
-        <h2 className="text-xl font-semibold">📜 History</h2>
-        {logs.map((log) => (
-          <div key={log.id} className="border rounded-2xl p-4 bg-white shadow">
-            <div className="font-semibold">📅 {log.date}</div>
-            <div>Body Fat: {log.bodyFat}%</div>
-            <div>
-              Weight: {unit === 'kg' ? (log.weight / 2.20462).toFixed(1) : log.weight} {unit}
-            </div>
-            {log.mood && <div>Mood: {log.mood}</div>}
-            {log.note && <div>Note: {log.note}</div>}
-          </div>
-        ))}
+      <div className="mt-10 max-w-xl mx-auto">
+        <h2
+          className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
+          onClick={() => setShowHistory(!showHistory)}
+        >
+          <span className={`transform transition-transform ${showHistory ? 'rotate-90' : ''}`}>▶</span>
+          📜 History
+        </h2>
+        <AnimatePresence>
+          {showHistory && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="space-y-4 max-h-[450px] overflow-y-auto"
+            >
+              {logs.map((log) => (
+                <motion.div
+                  key={log.id}
+                  layout
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="border rounded-2xl p-4 bg-white shadow"
+                >
+                  <div className="font-semibold">📅 {log.date}</div>
+                  <div>Body Fat: {log.bodyFat}%</div>
+                  <div>
+                    Weight: {unit === 'kg' ? (log.weight / 2.20462).toFixed(1) : log.weight} {unit}
+                  </div>
+                  {log.mood && <div>Mood: {log.mood}</div>}
+                  {log.note && <div>Note: {log.note}</div>}
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+      <div className="text-center mt-10">
+        <a
+          href="/charts"
+          className="text-purple-600 underline text-sm hover:text-purple-800"
+        >
+          📊 View Body Fat Trends
+        </a>
       </div>
     </div>
   )

@@ -21,6 +21,7 @@ export default function Home() {
           <Link href="/">Home</Link>
           <Link href="/wishes">Wish List</Link>
           <Link href="/log">Body Fat Log</Link>
+          <Link href="/charts">Body Fat Chart</Link>
           <Link href="/mood-heatmap">Mood Heatmap</Link>
           <Link href="/logout">Logout</Link>
         </div>

@@ -41,6 +41,13 @@ export default function WishesPage() {
   const [error, setError] = useState('')
   const [showPending, setShowPending] = useState(true)
   const [showCompleted, setShowCompleted] = useState(true)
+  const navItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Wishes', href: '/wishes' },
+    { name: 'Log', href: '/log' },
+    { name: 'Charts', href: '/charts' },
+    { name: 'Mood', href: '/mood-heatmap' },
+  ];
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -196,6 +203,17 @@ export default function WishesPage() {
     <div
       className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
     >
+      <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
+        {navItems.map((item) => (
+          <a
+            key={item.name}
+            href={item.href}
+            className="hover:underline hover:text-purple-900"
+          >
+            {item.name}
+          </a>
+        ))}
+      </nav>
       <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
         🌠 Wish List
       </h1>

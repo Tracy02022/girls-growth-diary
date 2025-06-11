@@ -31,7 +31,13 @@ const moodColorMap: Record<string, string> = {
 export default function MoodHeatmapPage() {
     const [logs, setLogs] = useState<FatLog[]>([])
     const [userId, setUserId] = useState<string | null>(null)
-
+    const navItems = [
+        { name: 'Home', href: '/' },
+        { name: 'Wishes', href: '/wishes' },
+        { name: 'Log', href: '/log' },
+        { name: 'Charts', href: '/charts' },
+        { name: 'Mood', href: '/mood-heatmap' },
+    ];
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (user) => {
             if (user) setUserId(user.uid)
@@ -75,6 +81,17 @@ export default function MoodHeatmapPage() {
 
     return (
         <div className="max-w-3xl mx-auto px-4 py-8">
+            <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
+                {navItems.map((item) => (
+                    <a
+                        key={item.name}
+                        href={item.href}
+                        className="hover:underline hover:text-purple-900"
+                    >
+                        {item.name}
+                    </a>
+                ))}
+            </nav>
             <h1 className="text-2xl font-bold mb-6 text-center">💭 心情热力图</h1>
             <CalendarHeatmap
                 startDate={startDate}
@@ -97,9 +114,9 @@ export default function MoodHeatmapPage() {
                 onClick={(value) => {
                     console.log('clicked value:', value)
                     if (value?.date) {
-                      router.push(`/log/${value.date}`)
+                        router.push(`/log/${value.date}`)
                     }
-                  }}
+                }}
             />
             <Tooltip id="heatmap-tooltip" />
             {/* 图例区域 */}
