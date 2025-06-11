@@ -1,4 +1,4 @@
-// pages/log/[date].tsx (Styled)
+// pages/log/[date].tsx (Styled + English)
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { onAuthStateChanged } from 'firebase/auth'
@@ -21,13 +21,13 @@ interface FatLog {
 }
 
 const moodLabels: Record<string, string> = {
-  '😊': '开心',
-  '😐': '平静',
-  '😢': '伤心',
-  '😡': '生气',
-  '😩': '焦虑',
-  '🥳': '兴奋',
-  '😴': '疲惫',
+  '😊': 'Happy',
+  '😐': 'Calm',
+  '😢': 'Sad',
+  '😡': 'Angry',
+  '😩': 'Anxious',
+  '🥳': 'Excited',
+  '😴': 'Tired',
 }
 
 export default function LogDetailPage() {
@@ -62,43 +62,51 @@ export default function LogDetailPage() {
     }
   }, [userId, date])
 
-  if (!date) return <p>加载中...</p>
-  if (!log) return <p className="p-4 text-center">没有找到该日期的记录：{date}</p>
+  if (!date) return <p>Loading...</p>
+  if (!log) return <p className="p-4 text-center">No log found for {date}</p>
 
   return (
-    <div className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}>
+    <div
+      className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
+    >
       <div className="max-w-md mx-auto bg-white rounded-2xl shadow p-6">
-        <h1 className={`text-2xl font-bold mb-4 text-center text-purple-700 ${dancingScript.className}`}>
+        <h1
+          className={`text-3xl font-bold mb-4 text-center text-purple-700 ${dancingScript.className}`}
+        >
           📅 Log Detail: {log.date}
         </h1>
-        <ul className="text-gray-700 space-y-4 text-sm">
+        <ul className="text-gray-700 space-y-3">
           {log.mood && (
             <li>
-              <strong>Mood:</strong>
-              <span className="text-lg ml-2">{log.mood}</span>（{moodLabels[log.mood] || 'unknown'}）
+              <strong>Mood: </strong>
+              <span className="text-lg">{log.mood}</span>{' '}
+              ({moodLabels[log.mood] || 'Unknown'})
             </li>
           )}
           <li>
-            <strong>Body Fat:</strong> {log.bodyFat}%
+            <strong>Body Fat: </strong> {log.bodyFat}%
           </li>
           <li>
-            <strong>Weight:</strong> {log.weight} lbs
+            <strong>Weight: </strong> {log.weight} lbs
           </li>
           {log.note && (
             <li>
-              <strong>Note:</strong> {log.note}
+              <strong>Note: </strong> {log.note}
             </li>
           )}
           <li>
-            <strong>Recorded at:</strong> {new Date(log.createdAt).toLocaleString()}
+            <strong>Created At: </strong>{' '}
+            {new Date(log.createdAt).toLocaleString()}
           </li>
         </ul>
-
-        <div className="mt-8 text-center">
-          <a href="/mood-heatmap" className="text-purple-600 underline text-sm hover:text-purple-800">
-            🔙 Back to Mood Heatmap
-          </a>
-        </div>
+      </div>
+      <div className="text-center mt-6">
+        <a
+          href="/mood-heatmap"
+          className="text-purple-600 underline text-sm hover:text-purple-800"
+        >
+          🔙 Back to Mood Heatmap
+        </a>
       </div>
     </div>
   )
