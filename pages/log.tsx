@@ -1,4 +1,4 @@
-// pages/log.tsx
+// Enhanced FatLog Page with consistent style
 import { useEffect, useState } from 'react'
 import { db, auth } from '../lib/firebase'
 import {
@@ -10,6 +10,10 @@ import {
   orderBy,
 } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
+import { Quicksand, Dancing_Script } from 'next/font/google'
+
+const quicksand = Quicksand({ subsets: ['latin'] })
+const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
 
 interface FatLog {
   id?: string
@@ -62,7 +66,7 @@ export default function FatLogPage() {
       })
       setLogs(results)
     } catch (err) {
-      console.error('加载日志失败:', err)
+      console.error('Failed to load logs:', err)
     }
   }
 
@@ -88,99 +92,98 @@ export default function FatLogPage() {
   }
 
   return (
-    <div className="max-w-xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-center">📉 体脂日志</h1>
+    <div
+      className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
+    >
+      <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
+        📉 Body Fat Log
+      </h1>
 
-      <div className="space-y-4">
+      <div className="max-w-xl mx-auto space-y-4">
         <input
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded-xl"
         />
         <input
           type="number"
           step="0.1"
-          placeholder="体脂率 %"
+          placeholder="Body Fat %"
           value={bodyFat}
           onChange={(e) => setBodyFat(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded-xl"
         />
         <input
           type="number"
           step="0.1"
-          placeholder={`体重（${unit === 'lb' ? '磅' : '公斤'}）`}
+          placeholder={`Weight (${unit === 'lb' ? 'lbs' : 'kg'})`}
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded-xl"
         />
-        <div className="text-right mb-2 text-sm">
+        <div className="text-right text-sm">
           <button
             onClick={() => {
               const weightVal = parseFloat(weight)
               if (!isNaN(weightVal)) {
                 if (unit === 'lb') {
-                  // lb -> kg
-                  const converted = weightVal / 2.20462
-                  setWeight(converted.toFixed(1))
+                  setWeight((weightVal / 2.20462).toFixed(1))
                   setUnit('kg')
                 } else {
-                  // kg -> lb
-                  const converted = weightVal * 2.20462
-                  setWeight(converted.toFixed(1))
+                  setWeight((weightVal * 2.20462).toFixed(1))
                   setUnit('lb')
                 }
               } else {
-                setUnit(unit === 'lb' ? 'kg' : 'lb') // 没有输入值时只切单位
+                setUnit(unit === 'lb' ? 'kg' : 'lb')
               }
             }}
             className="text-blue-600 underline"
           >
-            切换为 {unit === 'lb' ? '公斤' : '磅'}
+            Switch to {unit === 'lb' ? 'kg' : 'lbs'}
           </button>
-
         </div>
+
         <select
           value={mood}
           onChange={(e) => setMood(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded-xl"
         >
-          <option value="">选择今日心情</option>
-          <option value="😊">😊 开心</option>
-          <option value="😐">😐 平静</option>
-          <option value="😞">😞 低落</option>
-          <option value="😡">😡 生气</option>
-          <option value="😩">😩 压力大</option>
-          <option value="🥳">🥳 兴奋</option>
-          <option value="😴">😴 累了</option>
-          <option value="😢">😢 想哭</option>
+          <option value="">Select Mood</option>
+          <option value="😊">😊 Happy</option>
+          <option value="😐">😐 Calm</option>
+          <option value="😞">😞 Down</option>
+          <option value="😡">😡 Angry</option>
+          <option value="😩">😩 Anxious</option>
+          <option value="🥳">🥳 Excited</option>
+          <option value="😴">😴 Tired</option>
+          <option value="😢">😢 Sad</option>
         </select>
         <textarea
-          placeholder="备注（可选）"
+          placeholder="Note (optional)"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          className="w-full border px-3 py-2 rounded"
+          className="w-full border px-3 py-2 rounded-xl"
         ></textarea>
         <button
           onClick={addLog}
-          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700"
+          className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
         >
-          添加日志
+          Add Log
         </button>
       </div>
 
-      <div className="mt-10 space-y-4">
-        <h2 className="text-xl font-semibold">📜 历史记录</h2>
+      <div className="mt-10 max-w-xl mx-auto space-y-4">
+        <h2 className="text-xl font-semibold">📜 History</h2>
         {logs.map((log) => (
-          <div key={log.id} className="border rounded p-4 bg-white shadow">
+          <div key={log.id} className="border rounded-2xl p-4 bg-white shadow">
             <div className="font-semibold">📅 {log.date}</div>
-            <div>体脂率: {log.bodyFat}%</div>
+            <div>Body Fat: {log.bodyFat}%</div>
             <div>
-              体重: {unit === 'kg' ? (log.weight / 2.20462).toFixed(1) : log.weight}{' '}
-              {unit}
+              Weight: {unit === 'kg' ? (log.weight / 2.20462).toFixed(1) : log.weight} {unit}
             </div>
-            {log.mood && <div>心情: {log.mood}</div>}
-            {log.note && <div>备注: {log.note}</div>}
+            {log.mood && <div>Mood: {log.mood}</div>}
+            {log.note && <div>Note: {log.note}</div>}
           </div>
         ))}
       </div>
