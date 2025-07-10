@@ -67,7 +67,7 @@ export default function LogDetailPage() {
 
   return (
     <div
-      className={`min-h-screen px-4 py-8 bg-purple-50 ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}
+      className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
     >
       <div className="max-w-md mx-auto bg-white rounded-2xl shadow p-6">
         <h1
