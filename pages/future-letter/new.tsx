@@ -116,13 +116,13 @@ export default function FutureLetterPage() {
               </div>
             </div>
 
-            <div>
+                      <div>
                           <Label className={quicksand.className}>Unlock Date</Label>
                           <Calendar
                               mode="single"
                               selected={date}
-                              onSelect={(d) => setDate(d)}
-                              disabled={(day) => isBefore(day, startOfDay(new Date()))}
+                              onSelect={(d: Date | undefined) => setDate(d)}
+                              disabled={(day: Date) => isBefore(day, startOfDay(new Date()))}
                           />
               
             </div>
