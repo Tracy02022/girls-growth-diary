@@ -84,7 +84,7 @@ export default function FutureLetterPage() {
             key={item.name}
             href={item.href}
             className={`hover:underline hover:text-purple-900 ${
-              item.href === '/future-letter' ? 'underline font-semibold text-purple-900' : ''
+              item.href === '/future-letter/new' ? 'underline font-semibold text-purple-900' : ''
             }`}
           >
             {item.name}
