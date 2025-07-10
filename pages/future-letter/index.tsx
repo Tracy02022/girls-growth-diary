@@ -93,10 +93,12 @@ export default function FutureLetterListPage() {
     const unlockedLetters = filteredLetters.filter(l => new Date() >= new Date(l.unlockTimestamp))
     const lockedLetters = filteredLetters.filter(l => new Date() < new Date(l.unlockTimestamp))
 
-    const paginated = (list: FutureLetter[]) => {
-        const start = (page - 1) * pageSize
-        return list.slice(start, start + pageSize)
-    }
+    const totalUnlockedPages = Math.ceil(unlockedLetters.length / pageSize)
+    const totalLockedPages = Math.ceil(lockedLetters.length / pageSize)
+    const totalPages = Math.max(totalUnlockedPages, totalLockedPages)
+
+    const paginatedUnlocked = unlockedLetters.slice((page - 1) * pageSize, page * pageSize)
+    const paginatedLocked = lockedLetters.slice((page - 1) * pageSize, page * pageSize)
 
     const renderLetterCard = (letter: FutureLetter, isUnlocked: boolean) => (
         <div key={letter.id} className="border rounded-xl p-4 bg-white shadow-sm mb-2">
@@ -157,10 +159,10 @@ export default function FutureLetterListPage() {
                     <h2 className="text-lg font-semibold text-purple-800 mb-2">🔓 Unlocked Letters</h2>
                     {loading ? (
                         <p className="text-gray-500">Loading...</p>
-                    ) : paginated(unlockedLetters).length === 0 ? (
+                    ) : paginatedUnlocked.length === 0 ? (
                         <p className="text-gray-500">No unlocked letters.</p>
                     ) : (
-                        paginated(unlockedLetters).map((letter) => renderLetterCard(letter, true))
+                        paginatedUnlocked.map((letter) => renderLetterCard(letter, true))
                     )}
                 </div>
 
@@ -168,29 +170,31 @@ export default function FutureLetterListPage() {
                     <h2 className="text-lg font-semibold text-purple-800 mb-2">🔒 Locked Letters</h2>
                     {loading ? (
                         <p className="text-gray-500">Loading...</p>
-                    ) : paginated(lockedLetters).length === 0 ? (
+                    ) : paginatedLocked.length === 0 ? (
                         <p className="text-gray-500">No locked letters.</p>
                     ) : (
-                        paginated(lockedLetters).map((letter) => renderLetterCard(letter, false))
+                        paginatedLocked.map((letter) => renderLetterCard(letter, false))
                     )}
                 </div>
 
-                <div className="text-center mt-6 flex justify-center gap-4">
-                    <button
-                        disabled={page === 1}
-                        onClick={() => setPage((prev) => prev - 1)}
-                        className="px-3 py-1 bg-purple-200 rounded disabled:opacity-50"
-                    >
-                        ◀ Prev
-                    </button>
-                    <span className="text-sm mt-1">Page {page}</span>
-                    <button
-                        disabled={(page * pageSize) >= filteredLetters.length}
-                        onClick={() => setPage((prev) => prev + 1)}
-                        className="px-3 py-1 bg-purple-200 rounded disabled:opacity-50"
-                    >
-                        Next ▶
-                    </button>
+                <div className="text-center mt-6 flex justify-center gap-2 flex-wrap">
+                    {[...Array(totalPages)].map((_, i) => (
+                        <button
+                            key={i + 1}
+                            onClick={() => setPage(i + 1)}
+                            className={`px-3 py-1 rounded ${page === i + 1 ? 'bg-purple-600 text-white' : 'bg-purple-200 text-purple-700'}`}
+                        >
+                            {i + 1}
+                        </button>
+                    ))}
+                    {page < totalPages && (
+                        <button
+                            onClick={() => setPage(totalPages)}
+                            className="ml-2 px-3 py-1 bg-purple-300 text-purple-800 rounded hover:bg-purple-400"
+                        >
+                            ⏩ Last Page
+                        </button>
+                    )}
                 </div>
             </div>
 
