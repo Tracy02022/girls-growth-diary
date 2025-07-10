@@ -44,7 +44,7 @@ export default function FatLogPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-    { name: 'Future Letter', href: '/future-letter' },
+    { name: 'Write Future Letters', href: '/future-letter/new' },
   ];
 
 

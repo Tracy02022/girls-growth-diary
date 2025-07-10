@@ -93,7 +93,7 @@ export default function ViewFutureLetterPage() {
                     href="/future-letter/new"
                     className="text-purple-600 underline text-sm hover:text-purple-800"
                 >
-                    🔙 Back to Write Future Letter
+                    🔙 Back to Write Future Letters
                 </a>
             </div>
         </div>

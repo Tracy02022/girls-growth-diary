@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { useEffect } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -27,37 +28,43 @@ export default function FutureLetterPage() {
   const router = useRouter()
 
   // 获取当前用户
-  useState(() => {
+  useEffect(() => {
     const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) setUserId(user.uid)
-      else window.location.href = '/login'
+      if (user) {
+        setUserId(user.uid)
+      } else {
+        if (typeof window !== 'undefined') {
+          window.location.href = '/login'
+        }
+      }
     })
     return () => unsub()
-  })
+  }, [])
+  
 
   const handleSubmit = async () => {
-    if (!title || !content || !date || !time || !type || !userId) return
-    const unlockTimestamp = `${format(date, 'yyyy-MM-dd')}T${time}`
+    if (!title || !content || !date || !time || !type) return;
+  
+    const unlockTimestamp = `${format(date, 'yyyy-MM-dd')}T${time}`;
+  
+    const newLetter = {
+      title,
+      content,
+      type,
+      unlockTimestamp,
+      userId,
+      createdAt: new Date().toISOString(),
+    };
+  
     try {
-      await addDoc(collection(db, 'futureLetters'), {
-        title,
-        content,
-        type,
-        unlockTimestamp,
-        createdAt: new Date().toISOString(),
-        userId,
-      })
-      toast.success('✅ Letter saved successfully!')
-      setTitle('')
-      setContent('')
-      setType(null)
-      setDate(undefined)
-      setTime('12:00:00')
-    } catch (err) {
-      toast.error('❌ Failed to save letter')
-      console.error(err)
+      const docRef = await addDoc(collection(db, 'futureLetters'), newLetter);
+      toast.success('Letter saved!');
+      router.push(`/future-letter/${docRef.id}`);
+    } catch (error) {
+      toast.error('Failed to save letter.');
     }
   }
+  
 
   const navItems = [
     { name: 'Home', href: '/' },
@@ -65,7 +72,7 @@ export default function FutureLetterPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-    { name: 'Write Future Letter', href: '/future-letter/new' },
+    { name: 'Write Future Letters', href: '/future-letter/new' },
   ]
 
   return (
