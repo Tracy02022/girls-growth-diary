@@ -121,7 +121,9 @@ export default function FutureLetterPage() {
                           <Calendar
                               mode="single"
                               selected={date}
-                              onSelect={(d: Date | undefined) => setDate(d)}
+                              onSelect={(d: Date | undefined) => {
+                                  if (d) setDate(d);
+                              }}
                               disabled={(day: Date) => isBefore(day, startOfDay(new Date()))}
                           />
               
