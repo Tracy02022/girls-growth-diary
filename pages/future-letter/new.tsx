@@ -1,61 +1,61 @@
 'use client'
 
-import { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import { Calendar } from '@/components/ui/calendar';
-import { TimePicker } from '@/components/ui/time-picker';
-import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
-import { quicksand, dancingScript } from '@/lib/fonts';
-import { addDoc, collection } from 'firebase/firestore';
-import { db, auth } from '@/lib/firebase';
-import { useRouter } from 'next/router';
+import { useState } from 'react'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Button } from '@/components/ui/button'
+import { Label } from '@/components/ui/label'
+import { Calendar } from '@/components/ui/calendar'
+import { TimePicker } from '@/components/ui/time-picker'
+import { format, isBefore, startOfDay } from 'date-fns'
+import { toast } from 'sonner'
+import { cn } from '@/lib/utils'
+import { quicksand, dancingScript } from '@/lib/fonts'
+import { db, auth } from '@/lib/firebase'
+import { addDoc, collection } from 'firebase/firestore'
+import { onAuthStateChanged } from 'firebase/auth'
+import { useRouter } from 'next/router'
 
 export default function FutureLetterPage() {
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [type, setType] = useState<'success' | 'failure' | null>(null);
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [time, setTime] = useState<string>('12:00:00');
-  const [showToast, setShowToast] = useState(false);
-  const router = useRouter();
+  const [title, setTitle] = useState('')
+  const [content, setContent] = useState('')
+  const [type, setType] = useState<'success' | 'failure' | null>(null)
+  const [date, setDate] = useState<Date | undefined>(undefined)
+  const [time, setTime] = useState<string>('12:00:00')
+  const [userId, setUserId] = useState<string | null>(null)
+  const router = useRouter()
+
+  // 获取当前用户
+  useState(() => {
+    const unsub = onAuthStateChanged(auth, (user) => {
+      if (user) setUserId(user.uid)
+      else window.location.href = '/login'
+    })
+    return () => unsub()
+  })
 
   const handleSubmit = async () => {
-    if (!title || !content || !date || !time || !type) {
-      alert('Please fill out all fields.')
-      return
-    }
-  
-    const user = auth.currentUser
-    if (!user) {
-      alert('You must be logged in to save a letter.')
-      return
-    }
-  
+    if (!title || !content || !date || !time || !type || !userId) return
     const unlockTimestamp = `${format(date, 'yyyy-MM-dd')}T${time}`
-    const newLetter = {
-      userId: user.uid,
-      title,
-      content,
-      type,
-      unlockTimestamp,
-      createdAt: new Date().toISOString(),
-    }
-  
     try {
-      const docRef = await addDoc(collection(db, 'futureLetters'), newLetter)
-      setShowToast(true)
-      setTimeout(() => {
-        setShowToast(false)
-        router.push(`/future-letter/${docRef.id}`) // ✅ 跳转到详情页
-      }, 1500)
+      await addDoc(collection(db, 'futureLetters'), {
+        title,
+        content,
+        type,
+        unlockTimestamp,
+        createdAt: new Date().toISOString(),
+        userId,
+      })
+      toast.success('✅ Letter saved successfully!')
+      setTitle('')
+      setContent('')
+      setType(null)
+      setDate(undefined)
+      setTime('12:00:00')
     } catch (err) {
+      toast.error('❌ Failed to save letter')
       console.error(err)
-      alert('Failed to save letter.')
     }
   }
 
@@ -65,11 +65,11 @@ export default function FutureLetterPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-    { name: 'Future Letter', href: '/future-letter' },
-  ];
+    { name: 'Write Future Letter', href: '/future-letter/new' },
+  ]
 
   return (
-    <div className={`min-h-screen bg-[#f2eafa] bg-no-repeat bg-top-right px-4 py-8 ${quicksand.className}`}>
+    <div className={`min-h-screen bg-[#f2eafa] bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right px-4 py-8 ${quicksand.className}`}>
       {/* 导航栏 */}
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
         {navItems.map((item) => (
@@ -111,7 +111,7 @@ export default function FutureLetterPage() {
 
             <div>
               <Label className={quicksand.className}>Unlock Date</Label>
-              <Calendar mode="single" selected={date} onSelect={setDate} disabled={(day) => day < new Date()} />
+              <Calendar mode="single" selected={date} onSelect={setDate}   disabled={(day) => isBefore(day, startOfDay(new Date()))} />
             </div>
 
             <div>
@@ -136,23 +136,17 @@ export default function FutureLetterPage() {
             </Button>
           </CardContent>
         </Card>
-      </div>
 
-      <div className="mt-6 max-w-2xl mx-auto text-right">
-        <a
-          href="/future-letter"
-          className="text-sm text-purple-600 underline hover:text-purple-800"
-        >
-          📂 View all my letters
-        </a>
-      </div>
-
-      {/* ✅ 成功提示 Toast */}
-      {showToast && (
-        <div className="fixed bottom-6 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-sm px-6 py-3 rounded-xl shadow-lg z-50">
-          ✅ Letter saved! Redirecting...
+        {/* 👉 View all letters */}
+        <div className="text-right">
+          <button
+            onClick={() => router.push('/future-letter')}
+            className="text-sm text-purple-600 underline hover:text-purple-800"
+          >
+            📂 View all my letters
+          </button>
         </div>
-      )}
+      </div>
     </div>
-  );
+  )
 }

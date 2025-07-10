@@ -22,6 +22,7 @@
     "react-dom": "latest",
     "react-tooltip": "^5.28.1",
     "react-tsparticles": "^2.12.0",
+    "sonner": "^2.0.6",
     "tailwindcss-filters": "^3.0.0",
     "tsparticles": "^2.12.0",
     "tsparticles-engine": "^2.12.0"

@@ -39,7 +39,7 @@ export default function ChartsPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-    { name: 'Future Letter', href: '/future-letter' },
+    { name: 'Write Future Letter', href: '/future-letter/new' },
   ]
 
   useEffect(() => {
