@@ -90,10 +90,10 @@ export default function ViewFutureLetterPage() {
             </div>
             <div className="text-center mt-6">
                 <a
-                    href="/future-letter/new"
+                    href="/future-letter"
                     className="text-purple-600 underline text-sm hover:text-purple-800"
                 >
-                    🔙 Back to Write Future Letters
+                    🔙 Back to All Future Letters
                 </a>
             </div>
         </div>
