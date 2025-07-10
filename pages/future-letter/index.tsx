@@ -26,7 +26,7 @@ export default function FutureLetterListPage() {
     const [userId, setUserId] = useState<string | null>(null)
     const [search, setSearch] = useState('')
     const [page, setPage] = useState(1)
-    const pageSize = 5
+    const pageSize = 3
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (user) => {
