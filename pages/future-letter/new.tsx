@@ -22,7 +22,7 @@ export default function FutureLetterPage() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [type, setType] = useState<'success' | 'failure' | null>(null)
-  const [date, setDate] = useState<Date | undefined>(undefined)
+  const [date, setDate] = useState<Date | undefined>(new Date())
   const [time, setTime] = useState<string>('12:00:00')
   const [userId, setUserId] = useState<string | null>(null)
   const router = useRouter()
