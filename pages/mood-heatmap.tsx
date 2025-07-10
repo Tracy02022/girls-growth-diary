@@ -137,7 +137,7 @@ export default function MoodHeatmapPage() {
           }
         }}
       />
-      <Tooltip id="heatmap-tooltip" html={true} />
+      <Tooltip id="heatmap-tooltip"/>
       <div className="mt-6 text-sm text-center text-gray-600">
         <p className="mb-2">Mood Legend:</p>
         <div className="flex justify-center flex-wrap gap-4">

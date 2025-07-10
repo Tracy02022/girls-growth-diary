@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils';
 
 interface CalendarProps extends DayPickerSingleProps {
   className?: string;
+  disabled?: (date: Date) => boolean;
 }
 
 export function Calendar({ className, ...props }: CalendarProps) {
