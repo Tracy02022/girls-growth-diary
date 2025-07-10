@@ -25,6 +25,8 @@ export default function FutureLetterListPage() {
     const [loading, setLoading] = useState(true)
     const [userId, setUserId] = useState<string | null>(null)
     const [search, setSearch] = useState('')
+    const [page, setPage] = useState(1)
+    const pageSize = 5
 
     useEffect(() => {
         const unsub = onAuthStateChanged(auth, (user) => {
@@ -91,6 +93,41 @@ export default function FutureLetterListPage() {
     const unlockedLetters = filteredLetters.filter(l => new Date() >= new Date(l.unlockTimestamp))
     const lockedLetters = filteredLetters.filter(l => new Date() < new Date(l.unlockTimestamp))
 
+    const paginated = (list: FutureLetter[]) => {
+        const start = (page - 1) * pageSize
+        return list.slice(start, start + pageSize)
+    }
+
+    const renderLetterCard = (letter: FutureLetter, isUnlocked: boolean) => (
+        <div key={letter.id} className="border rounded-xl p-4 bg-white shadow-sm mb-2">
+            <div className="flex justify-between items-center">
+                <div>
+                    <h2 className="text-lg font-semibold text-purple-800">{letter.title}</h2>
+                    <p className="text-sm text-gray-600">
+                        Unlock Time: {format(new Date(letter.unlockTimestamp), 'PPP p')}
+                    </p>
+                    <p className="text-sm text-gray-500 mt-1">
+                        {letter.type === 'success' ? '🎯 Success Letter' : '🌧 Comfort Letter'}
+                    </p>
+                    <p className="text-xs text-gray-400 mt-1">
+                        Created: {format(new Date(letter.createdAt), 'PPP p')} | Words: {letter.content.split(/\s+/).length}
+                    </p>
+                </div>
+                <div className="flex flex-col gap-2 text-sm text-right">
+                    {isUnlocked ? (
+                        <>
+                            <a href={`/future-letter/${letter.id}`} className="text-purple-600 hover:underline">View</a>
+                            <button onClick={() => handleDownload(letter)} className="text-green-600 hover:underline">Download</button>
+                        </>
+                    ) : (
+                        <div className="text-gray-500">🔒 Locked</div>
+                    )}
+                    <button onClick={() => handleDelete(letter)} className="text-red-500 hover:underline">Delete</button>
+                </div>
+            </div>
+        </div>
+    )
+
     return (
         <div className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}>
             <h1 className={cn("text-3xl font-bold text-center text-purple-600 mb-6", dancingScript.className)}>
@@ -120,44 +157,10 @@ export default function FutureLetterListPage() {
                     <h2 className="text-lg font-semibold text-purple-800 mb-2">🔓 Unlocked Letters</h2>
                     {loading ? (
                         <p className="text-gray-500">Loading...</p>
-                    ) : unlockedLetters.length === 0 ? (
+                    ) : paginated(unlockedLetters).length === 0 ? (
                         <p className="text-gray-500">No unlocked letters.</p>
                     ) : (
-                        unlockedLetters.map((letter) => (
-                            <div key={letter.id} className="border rounded-xl p-4 bg-white shadow-sm mb-2">
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-purple-800">{letter.title}</h2>
-                                        <p className="text-sm text-gray-600">
-                                            Unlock Time: {format(new Date(letter.unlockTimestamp), 'PPP p')}
-                                        </p>
-                                        <p className="text-sm text-gray-500 mt-1">
-                                            {letter.type === 'success' ? '🎯 Success Letter' : '🌧 Comfort Letter'}
-                                        </p>
-                                    </div>
-                                    <div className="flex flex-col gap-2 text-sm text-right">
-                                        <a
-                                            href={`/future-letter/${letter.id}`}
-                                            className="text-purple-600 hover:underline"
-                                        >
-                                            View
-                                        </a>
-                                        <button
-                                            onClick={() => handleDownload(letter)}
-                                            className="text-green-600 hover:underline"
-                                        >
-                                            Download
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(letter)}
-                                            className="text-red-500 hover:underline"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))
+                        paginated(unlockedLetters).map((letter) => renderLetterCard(letter, true))
                     )}
                 </div>
 
@@ -165,34 +168,29 @@ export default function FutureLetterListPage() {
                     <h2 className="text-lg font-semibold text-purple-800 mb-2">🔒 Locked Letters</h2>
                     {loading ? (
                         <p className="text-gray-500">Loading...</p>
-                    ) : lockedLetters.length === 0 ? (
+                    ) : paginated(lockedLetters).length === 0 ? (
                         <p className="text-gray-500">No locked letters.</p>
                     ) : (
-                        lockedLetters.map((letter) => (
-                            <div key={letter.id} className="border rounded-xl p-4 bg-white shadow-sm mb-2">
-                                <div className="flex justify-between items-center">
-                                    <div>
-                                        <h2 className="text-lg font-semibold text-purple-800">{letter.title}</h2>
-                                        <p className="text-sm text-gray-600">
-                                            Unlock Time: {format(new Date(letter.unlockTimestamp), 'PPP p')}
-                                        </p>
-                                        <p className="text-sm text-gray-500 mt-1">
-                                            {letter.type === 'success' ? '🎯 Success Letter' : '🌧 Comfort Letter'}
-                                        </p>
-                                    </div>
-                                    <div className="text-sm text-gray-500 text-right">
-                                        🔒 Locked
-                                        <button
-                                            onClick={() => handleDelete(letter)}
-                                            className="block text-red-500 hover:underline mt-2"
-                                        >
-                                            Delete
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))
+                        paginated(lockedLetters).map((letter) => renderLetterCard(letter, false))
                     )}
+                </div>
+
+                <div className="text-center mt-6 flex justify-center gap-4">
+                    <button
+                        disabled={page === 1}
+                        onClick={() => setPage((prev) => prev - 1)}
+                        className="px-3 py-1 bg-purple-200 rounded disabled:opacity-50"
+                    >
+                        ◀ Prev
+                    </button>
+                    <span className="text-sm mt-1">Page {page}</span>
+                    <button
+                        disabled={(page * pageSize) >= filteredLetters.length}
+                        onClick={() => setPage((prev) => prev + 1)}
+                        className="px-3 py-1 bg-purple-200 rounded disabled:opacity-50"
+                    >
+                        Next ▶
+                    </button>
                 </div>
             </div>
 
