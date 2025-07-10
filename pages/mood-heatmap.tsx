@@ -44,6 +44,7 @@ export default function MoodHeatmapPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
+    { name: 'Future Letter', href: '/future-letter' },
   ]
 
   useEffect(() => {
@@ -93,7 +94,8 @@ export default function MoodHeatmapPage() {
           <a
             key={item.name}
             href={item.href}
-            className="hover:underline hover:text-purple-900"
+            className={`hover:underline hover:text-purple-900 ${item.href == '/mood-heatmap' ? 'underline font-semibold text-purple-900' : ''
+              }`}
           >
             {item.name}
           </a>

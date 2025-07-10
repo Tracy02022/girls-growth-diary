@@ -23,15 +23,39 @@ export default function FutureLetterPage() {
     console.log({ title, content, type, unlockTimestamp });
     // TODO: Save API call
   };
+  const navItems = [
+    { name: 'Home', href: '/' },
+    { name: 'Wishes', href: '/wishes' },
+    { name: 'Log', href: '/log' },
+    { name: 'Charts', href: '/charts' },
+    { name: 'Mood', href: '/mood-heatmap' },
+    { name: 'Future Letter', href: '/future-letter' }, // 新增
+  ];
 
   return (
-    <div className="max-w-2xl mx-auto p-6 space-y-6">
-      <h1 className={cn("text-3xl font-bold text-center text-purple-600", dancingScript.className)}>
-        Future Letter
+    <div className={`min-h-screen bg-[#f2eafa] bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right px-4 py-8 ${quicksand.className}`}>
+      {/* 导航栏 */}
+      <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
+        {navItems.map((item) => (
+          <a
+            key={item.name}
+            href={item.href}
+            className={`hover:underline hover:text-purple-900 ${
+              item.href === '/future-letter' ? 'underline font-semibold text-purple-900' : ''
+            }`}
+          >
+            {item.name}
+          </a>
+        ))}
+      </nav>
+  
+      <h1 className={cn("text-3xl font-bold text-center text-purple-600 mb-6", dancingScript.className)}>
+        💌 Future Letter
       </h1>
-
-      <Card className="rounded-2xl shadow-lg border border-purple-200">
-        <CardContent className="space-y-4 p-6 text-purple-900">
+  
+      <div className="max-w-2xl mx-auto space-y-6">
+        <Card className="rounded-2xl shadow-lg border border-purple-200">
+          <CardContent className="space-y-4 p-6 text-purple-900">
           <div>
             <Label className={quicksand.className}>Title</Label>
             <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Something to remind or encourage future me..." className="rounded-xl" />
@@ -54,10 +78,11 @@ export default function FutureLetterPage() {
             <Calendar mode="single" selected={date} onSelect={setDate} disabled={(day) => day < new Date()} />
           </div>
 
-          <div>
-            <Label className={quicksand.className}>Unlock Time (HH:mm:ss)</Label>
-            <TimePicker time={time} setTime={setTime} />
-          </div>
+            <div>
+              <Label className={quicksand.className}>Unlock Time (HH:mm:ss)</Label>
+              <p className="text-sm text-gray-500 mb-1">* Uses 24-hour format (e.g. 18:30:00 for 6:30 PM)</p>
+              <TimePicker time={time} setTime={setTime} />
+            </div>
 
           <div>
             <Label className={quicksand.className}>Letter Content</Label>
@@ -76,5 +101,6 @@ export default function FutureLetterPage() {
         </CardContent>
       </Card>
     </div>
+  </div>
   );
 }

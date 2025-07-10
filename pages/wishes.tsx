@@ -47,6 +47,7 @@ export default function WishesPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
+    { name: 'Future Letter', href: '/future-letter' },
   ];
 
   useEffect(() => {
@@ -208,7 +209,9 @@ export default function WishesPage() {
           <a
             key={item.name}
             href={item.href}
-            className="hover:underline hover:text-purple-900"
+            className={`hover:underline hover:text-purple-900 ${
+              item.href == '/wishes' ? 'underline font-semibold text-purple-900' : ''
+            }`}
           >
             {item.name}
           </a>

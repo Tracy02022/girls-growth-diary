@@ -39,6 +39,7 @@ export default function ChartsPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
+    { name: 'Future Letter', href: '/future-letter' },
   ]
 
   useEffect(() => {
@@ -128,7 +129,9 @@ export default function ChartsPage() {
           <a
             key={item.name}
             href={item.href}
-            className="hover:underline hover:text-purple-900"
+            className={`hover:underline hover:text-purple-900 ${
+              item.href == '/charts' ? 'underline font-semibold text-purple-900' : ''
+            }`}
           >
             {item.name}
           </a>
