@@ -44,7 +44,7 @@ export default function MoodHeatmapPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-    { name: 'Write Future Letter', href: '/future-letter/new' },
+    { name: 'Write Future Letters', href: '/future-letter/new' },
   ]
 
   useEffect(() => {

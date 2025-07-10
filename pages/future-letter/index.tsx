@@ -1,13 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { collection, getDocs, query, where, orderBy, doc, getDoc } from 'firebase/firestore'
+import { collection, getDocs, query, where, orderBy, doc, getDoc, deleteDoc } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useRouter } from 'next/router'
 import { format } from 'date-fns'
 import { db, auth } from '@/lib/firebase'
 import { quicksand, dancingScript } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
+import { toast } from 'sonner'
 
 interface FutureLetter {
     id: string
@@ -71,6 +72,19 @@ export default function FutureLetterListPage() {
         link.click()
     }
 
+    const handleDelete = async (letter: FutureLetter) => {
+        const confirmDelete = confirm(`Are you sure you want to delete "${letter.title}"?`)
+        if (!confirmDelete) return
+        try {
+            await deleteDoc(doc(db, 'futureLetters', letter.id))
+            setLetters(prev => prev.filter(l => l.id !== letter.id))
+            toast.success('Letter deleted')
+        } catch (err) {
+            console.error('Failed to delete letter:', err)
+            toast.error('Failed to delete letter')
+        }
+    }
+
     return (
         <div className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-[url('/bg-girl-topright.png')] bg-no-repeat bg-top-right`}>
             <h1 className={cn("text-3xl font-bold text-center text-purple-600 mb-6", dancingScript.className)}>
@@ -100,26 +114,32 @@ export default function FutureLetterListPage() {
                                         </p>
                                     </div>
 
-                                    {isUnlocked ? (
-                                        <div className="flex flex-col gap-2 text-sm text-right">
-                                            <a
-                                                href={`/future-letter/${letter.id}`}
-                                                className="text-purple-600 hover:underline"
-                                            >
-                                                View
-                                            </a>
-                                            <button
-                                                onClick={() => handleDownload(letter)}
-                                                className="text-green-600 hover:underline"
-                                            >
-                                                Download
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <div className="text-sm text-gray-500 text-right">
-                                            🔒 Locked
-                                        </div>
-                                    )}
+                                    <div className="flex flex-col gap-2 text-sm text-right">
+                                        {isUnlocked ? (
+                                            <>
+                                                <a
+                                                    href={`/future-letter/${letter.id}`}
+                                                    className="text-purple-600 hover:underline"
+                                                >
+                                                    View
+                                                </a>
+                                                <button
+                                                    onClick={() => handleDownload(letter)}
+                                                    className="text-green-600 hover:underline"
+                                                >
+                                                    Download
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <div className="text-gray-500">🔒 Locked</div>
+                                        )}
+                                        <button
+                                            onClick={() => handleDelete(letter)}
+                                            className="text-red-500 hover:underline"
+                                        >
+                                            Delete
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         )
