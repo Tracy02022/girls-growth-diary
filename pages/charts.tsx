@@ -126,7 +126,9 @@ export default function ChartsPage() {
     <div
       className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
     >
-      <UserAvatar />
+      <div className="absolute top-4 right-4 z-20">
+        <UserAvatar />
+      </div>      
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
         {navItems.map((item) => (
           <a

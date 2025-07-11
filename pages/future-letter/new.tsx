@@ -113,7 +113,9 @@ export default function FutureLetterPage() {
 
     return (
         <div className={`min-h-screen bg-[#f2eafa] bg-no-repeat bg-top-right px-4 py-8 ${quicksand.className}`}>
-            <UserAvatar />
+            <div className="absolute top-4 right-4 z-20">
+                <UserAvatar />
+            </div>
             {/* 导航栏 */}
             <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
                 {navItems.map((item) => (

@@ -18,6 +18,7 @@ export default function UserAvatar() {
         const docSnap = await getDoc(docRef)
         if (docSnap.exists()) {
           const data = docSnap.data()
+          console.log('👤 Avatar loaded:', data.photoBase64)
           setPhoto(data.photoBase64 || null)
         }
       }
@@ -27,14 +28,26 @@ export default function UserAvatar() {
   }, [])
 
   return (
-    <div className="absolute top-4 right-4 cursor-pointer" onClick={() => router.push('/profile')}>
-      <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400 shadow">
+    <div className="fixed top-4 right-4 z-50 cursor-pointer" onClick={() => router.push('/profile')}>
+      <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-purple-400 shadow">
         {photo ? (
-          <Image src={photo} alt="Avatar" width={40} height={40} className="object-cover w-full h-full" />
+          <Image
+          src={photo}
+          alt="Avatar"
+          width={40}
+          height={40}
+          className="object-cover"
+          unoptimized // ← 必须加
+        />
         ) : (
-          <div className="w-full h-full bg-purple-200 flex items-center justify-center text-sm text-purple-700">
-            👤
-          </div>
+            <Image
+            src="/icons/default-avatar.png"
+            alt="Default Avatar"
+            width={40}
+            height={40}
+            className="object-cover"
+            unoptimized
+          />
         )}
       </div>
     </div>
