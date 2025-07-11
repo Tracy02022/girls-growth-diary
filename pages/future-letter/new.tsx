@@ -162,8 +162,8 @@ export default function FutureLetterPage() {
                                 onSelect={(d: Date | undefined) => {
                                     if (d) setDate(d);
                                 }}
-                                disabled={(day: Date) => isBefore(day, startOfDay(new Date()))
-                                }
+                                disabled={(day: Date) => isBefore(day, startOfDay(new Date()))}
+                                month={date}
                             />
 
                         </div>
