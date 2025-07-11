@@ -48,6 +48,7 @@ export default function WishesPage() {
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
     { name: 'Write Future Letters', href: '/future-letter/new' },
+    { name: 'Logout', href: '/logout' },
   ];
 
   useEffect(() => {

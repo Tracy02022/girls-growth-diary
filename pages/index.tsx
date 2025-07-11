@@ -23,7 +23,7 @@ export default function Home() {
           <Link href="/log">Body Fat Log</Link>
           {/* <Link href="/charts">Body Fat Chart</Link> */}
           <Link href="/mood-heatmap">Mood Heatmap</Link>
-          <Link href="/future-letter">Write Future Letters</Link>
+          <Link href="/future-letter/new">Write Future Letters</Link>
           <Link href="/logout">Logout</Link>
         </div>
       </nav>

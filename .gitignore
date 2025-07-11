@@ -56,3 +56,4 @@ logs/
 # Optional: If using storybook
 .storybook-out/
 
+.vercel
