@@ -47,7 +47,7 @@ export default function WishesPage() {
     { name: 'Log', href: '/log' },
     { name: 'Charts', href: '/charts' },
     { name: 'Mood', href: '/mood-heatmap' },
-    { name: 'Future Letter', href: '/future-letter' },
+    { name: 'Write Future Letters', href: '/future-letter/new' },
   ];
 
   useEffect(() => {
@@ -180,17 +180,23 @@ export default function WishesPage() {
             🎯 Target date: {wish.targetDate}
             <span className="ml-2 text-purple-500">{countdownText}</span>
           </div>
-          <div className="flex items-center mb-2 justify-between">
-            <div className="flex gap-2 text-sm text-right text-purple-600">
-              {!wish.isDone && (
+          <div className="flex gap-2 text-sm text-right text-purple-600 flex-wrap">
+            {!wish.isDone && (
+              <>
                 <button onClick={() => markWishDone(wish.id!)} className="hover:underline">
                   Mark Done
                 </button>
-              )}
-              <button onClick={() => deleteWish(wish.id!)} className="text-red-600 hover:underline">
-                Delete
-              </button>
-            </div>
+                <button
+                  onClick={() => window.location.href = `/future-letter/new?wishId=${wish.id}`}
+                  className="hover:underline"
+                >
+                  ✉️ Write Letter
+                </button>
+              </>
+            )}
+            <button onClick={() => deleteWish(wish.id!)} className="text-red-600 hover:underline">
+              Delete
+            </button>
           </div>
         </div>
       </motion.div>
@@ -274,6 +280,9 @@ export default function WishesPage() {
         {/* Collapsible lists with animation */}
         <div className="mt-10 space-y-6">
           <div>
+            <p className="mt-2 text-sm text-gray-600">
+              Add a future letter to remind or encourage yourself for each wish
+            </p>
             <h2
               className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
               onClick={() => setShowPending(!showPending)}

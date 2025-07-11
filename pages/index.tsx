@@ -21,7 +21,7 @@ export default function Home() {
           <Link href="/">Home</Link>
           <Link href="/wishes">Wish List</Link>
           <Link href="/log">Body Fat Log</Link>
-          <Link href="/charts">Body Fat Chart</Link>
+          {/* <Link href="/charts">Body Fat Chart</Link> */}
           <Link href="/mood-heatmap">Mood Heatmap</Link>
           <Link href="/future-letter">Write Future Letters</Link>
           <Link href="/logout">Logout</Link>
@@ -55,6 +55,14 @@ export default function Home() {
               <Image src="/icons/mood-heatmap.png" alt="Mood Heatmap Icon" width={64} height={64} />
               <h3 className="text-xl font-bold text-purple-700 mt-4">Mood Heatmap</h3>
               <p className="mt-2 text-sm text-gray-600">Visualize your daily mood patterns</p>
+            </div>
+          </Link>
+
+          <Link href="/future-letter/new">
+            <div className="rounded-xl shadow-lg bg-white bg-opacity-90 p-6 hover:bg-violet-100 transition-all transform hover:scale-105 duration-300 ease-in-out text-center flex flex-col justify-center items-center">
+              <Image src="/icons/future-letter.png" alt="Future Letter Icon" width={64} height={64} />
+              <h3 className="text-xl font-bold text-purple-700 mt-4">Future Letter</h3>
+              <p className="mt-2 text-sm text-gray-600">Write a letter to your future self with unlock date and time</p>
             </div>
           </Link>
         </div>
