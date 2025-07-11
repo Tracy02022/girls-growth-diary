@@ -1,39 +1,37 @@
-🧭 整体产品结构图（功能模块划分）
-🌐 网站入口（基于 Next.js 路由结构）
+/
+├── 🏠 Home (Dashboard) ※ [Coming Soon]
+│   ├── Today Overview: Body Fat, Mood, Period, Wish Reminders
+│   └── Quick Actions: Add Log / New Wish / View Charts
 │
-├── 🏠 首页（Dashboard）※ [待开发]
-│   ├── 今日概览（体脂/心情/经期/愿望提醒）
-│   └── 快捷入口（新增日志 / 添加愿望 / 查看趋势图）
+├── 📅 Growth Calendar → /log.tsx + /date/[date].tsx
+│   ├── Daily Logs: Body Fat, Weight, Mood, Notes
+│   ├── Visual Tags: Emoji Mood + Period Markers (future support)
+│   └── View Details: Click heatmap to explore a specific day
 │
-├── 📅 成长日历页（成长日志） → `/log.tsx` + `/date/[date].tsx`
-│   ├── 日志打卡：体脂 / 体重 / 心情 / 备注
-│   ├── 可视化标记：Emoji心情 + 经期（未来支持）
-│   └── 查看某天详情（点击热力图进入）
+├── 🌠 Wish List → /wishes.tsx
+│   ├── All Wishes (Completed / In Progress)
+│   ├── Countdown & Tag Filters (Growth / Travel / Health / etc.)
+│   └── Add New Wish (Supports image + text)
 │
-├── 🌠 愿望清单页 → `/wishes.tsx`
-│   ├── 愿望列表（已完成 / 未完成）
-│   ├── 倒计时提醒 + 标签分类（成长/旅行/身体等）
-│   └── 添加愿望（支持图文）
+├── 💌 Future Letters & Emotional Capsules ※ [Coming Soon]
+│   ├── 📬 /future-letter.tsx
+│   │   ├── Write to Future Self (Encouragement / Comfort)
+│   │   ├── Text or Voice [Coming Soon]
+│   │   └── Precise Unlock Time (Not viewable before set time)
+│   └── 🎙️ /future-capsule.tsx
+│       ├── Record Current Mood & Thoughts (Release to the future)
+│       └── Choose Text or Voice, with Unlock Timer
 │
-├── 💌 未来信 & 情绪胶囊 [待开发]
-│   ├── 📬 `/future-letter.tsx`
-│   │   ├── 写信给未来自己（鼓励 / 安慰）
-│   │   ├── 文字或语音内容 [待开发]
-│   │   └── 精确解锁时间（不可提前查看）
-│   └── 🎙️ `/future-capsule.tsx`
-│       ├── 当前心情 + 倾诉（释放到未来）
-│       └── 文字 / 语音可选，时间胶囊设定
+├── 📊 Data Visualization → /charts.tsx, /mood-heatmap.tsx
+│   ├── Body Fat & Weight Trend Charts
+│   ├── Mood Heatmap (with Hover & Tooltip)
+│   └── Period Cycle Chart + Prediction (Planned)
 │
-├── 📊 数据可视化图表页 → `/charts.tsx`, `/mood-heatmap.tsx`
-│   ├── 体脂 / 体重趋势图
-│   ├── 心情热力图（带 hover + Tooltip）
-│   └── 经期周期图 + 预测（计划中）
+├── 🔐 Authentication
+│   ├── /login.tsx
+│   └── /register.tsx
 │
-├── 🔐 登录注册模块
-│   ├── `/login.tsx`
-│   └── `/register.tsx`
-│
-└── ⚙️ 我的设置页 ※ [待开发]
-    ├── 个人资料：昵称 / 头像 / 私密锁
-    ├── 数据导出 / 下载日志 / 图表
-    └── 反馈建议 / 关于本站
+└── ⚙️ Settings ※ [Coming Soon]
+    ├── Profile: Nickname / Avatar / Privacy Lock
+    ├── Export Logs / Download Charts
+    └── Feedback & About the Project
