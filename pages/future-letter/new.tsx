@@ -18,6 +18,7 @@ import { addDoc, collection, query, getDocs, where } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import { useRouter } from 'next/router'
 import { useSearchParams } from 'next/navigation'
+import UserAvatar from '@/components/UserAvatar'
 
 export default function FutureLetterPage() {
     const [title, setTitle] = useState('')
@@ -112,6 +113,7 @@ export default function FutureLetterPage() {
 
     return (
         <div className={`min-h-screen bg-[#f2eafa] bg-no-repeat bg-top-right px-4 py-8 ${quicksand.className}`}>
+            <UserAvatar />
             {/* 导航栏 */}
             <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
                 {navItems.map((item) => (
@@ -124,14 +126,7 @@ export default function FutureLetterPage() {
                         {item.name}
                     </a>
                 ))}
-            </nav>
-            <div className="absolute right-4 top-4 cursor-pointer" onClick={() => router.push('/profile')}>
-                <img
-                    src="/icons/default-avatar.png"
-                    alt="Profile"
-                    className="w-10 h-10 rounded-full border-2 border-purple-300 shadow"
-                />
-            </div>                   
+            </nav>                 
             <h1 className={cn("text-3xl font-bold text-center text-purple-600 mb-6", dancingScript.className)}>
                 💌 Future Letter
             </h1>

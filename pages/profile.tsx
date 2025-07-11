@@ -1,10 +1,9 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
 import { onAuthStateChanged, sendPasswordResetEmail } from 'firebase/auth'
-import { auth, db, storage } from '@/lib/firebase'
+import { auth, db } from '@/lib/firebase'
 import { quicksand, dancingScript } from '@/lib/fonts'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -17,8 +16,8 @@ export default function ProfilePage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [email, setEmail] = useState('')
   const [nickname, setNickname] = useState('')
-  const [gender, setGender] = useState<string>('') // 🟣 新增字段
-  const [photoURL, setPhotoURL] = useState<string | null>(null)
+  const [gender, setGender] = useState<string>('')
+  const [photoDataUrl, setPhotoDataUrl] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -32,8 +31,8 @@ export default function ProfilePage() {
         if (docSnap.exists()) {
           const data = docSnap.data()
           setNickname(data.nickname || '')
-          setPhotoURL(data.photoURL || null)
-          setGender(data.gender || '') // 🟣 加载性别
+          setPhotoDataUrl(data.photoBase64 || null)
+          setGender(data.gender || '')
         }
       } else {
         router.push('/login')
@@ -47,23 +46,25 @@ export default function ProfilePage() {
     const file = e.target.files?.[0]
     if (!file || !userId) return
 
-    const storageRef = ref(storage, `avatars/${userId}`)
-    await uploadBytes(storageRef, file)
-    const newPhotoURL = await getDownloadURL(storageRef)
-    setPhotoURL(newPhotoURL)
+    const reader = new FileReader()
+    reader.onloadend = async () => {
+      const base64String = reader.result as string
+      setPhotoDataUrl(base64String)
 
-    await setDoc(doc(db, 'profiles', userId), {
-      nickname,
-      photoURL: newPhotoURL,
-      gender,
-    })
+      await setDoc(doc(db, 'profiles', userId), {
+        nickname,
+        photoBase64: base64String,
+        gender,
+      })
+    }
+    reader.readAsDataURL(file)
   }
 
   const handleSave = async () => {
     if (!userId) return
     await setDoc(doc(db, 'profiles', userId), {
       nickname,
-      photoURL,
+      photoBase64: photoDataUrl,
       gender,
     })
     alert('Profile saved!')
@@ -77,7 +78,6 @@ export default function ProfilePage() {
 
   return (
     <div className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className}`}>
-      {/* 顶部导航栏 */}
       <nav className="mb-6 flex justify-end px-4 text-sm text-purple-700 font-medium">
         <a href="/" className="hover:underline hover:text-purple-900">← Back Home</a>
       </nav>
@@ -89,8 +89,8 @@ export default function ProfilePage() {
       <div className="max-w-md mx-auto space-y-6 bg-white rounded-2xl p-6 shadow-md border border-purple-200">
         <div className="flex flex-col items-center gap-4">
           <div className="relative w-24 h-24 rounded-full overflow-hidden border border-purple-300 shadow-sm">
-            {photoURL ? (
-              <Image src={photoURL} alt="avatar" fill className="object-cover" />
+            {photoDataUrl ? (
+              <Image src={photoDataUrl} alt="avatar" fill className="object-cover" />
             ) : (
               <div className="w-full h-full bg-purple-100 flex items-center justify-center text-purple-500">
                 No Avatar

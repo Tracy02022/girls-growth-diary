@@ -15,7 +15,7 @@ import {
   Tooltip,
 } from 'chart.js'
 import { Quicksand, Dancing_Script } from 'next/font/google'
-import { useRouter } from 'next/router'
+import UserAvatar from '@/components/UserAvatar'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -43,8 +43,6 @@ export default function ChartsPage() {
     { name: 'Write Future Letters', href: '/future-letter/new' },
     { name: 'Logout', href: '/logout' },
   ]
-
-  const router = useRouter()
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -128,6 +126,7 @@ export default function ChartsPage() {
     <div
       className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
     >
+      <UserAvatar />
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
         {navItems.map((item) => (
           <a
@@ -140,15 +139,7 @@ export default function ChartsPage() {
             {item.name}
           </a>
         ))}
-      </nav>
-
-      <div className="absolute right-4 top-4 cursor-pointer" onClick={() => router.push('/profile')}>
-        <img
-          src="/icons/default-avatar.png"
-          alt="Profile"
-          className="w-10 h-10 rounded-full border-2 border-purple-300 shadow"
-        />
-      </div>  
+      </nav> 
       <h1 className={`text-3xl font-bold mb-4 text-center text-purple-700 ${dancingScript.className}`}>
         📊 Body Fat / Weight Trend
       </h1>
