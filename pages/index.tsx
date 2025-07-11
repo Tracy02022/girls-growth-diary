@@ -1,11 +1,13 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { Quicksand, Dancing_Script } from 'next/font/google'
+import { useRouter } from 'next/router'
 
 const quicksand = Quicksand({ subsets: ['latin'], weight: ['400', '600', '700'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
 
 export default function Home() {
+  const router = useRouter()
   return (
     <div
       className={`relative min-h-screen bg-[#ede9f5] ${quicksand.className}`}
@@ -27,7 +29,14 @@ export default function Home() {
           <Link href="/logout">Logout</Link>
         </div>
       </nav>
-
+      <div className="absolute right-4 top-4 cursor-pointer" onClick={() => router.push('/profile')}>
+        <img
+          src="/icons/default-avatar.png"
+          alt="Profile"
+          className="w-10 h-10 rounded-full border-2 border-purple-300 shadow"
+        />
+      </div>
+      
       {/* Spacer to push cards lower */}
       <div className="h-[480px]" />
 

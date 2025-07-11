@@ -102,6 +102,13 @@ export default function MoodHeatmapPage() {
           </a>
         ))}
       </nav>
+      <div className="absolute right-4 top-4 cursor-pointer" onClick={() => router.push('/profile')}>
+        <img
+          src="/icons/default-avatar.png"
+          alt="Profile"
+          className="w-10 h-10 rounded-full border-2 border-purple-300 shadow"
+        />
+      </div>
       <h1
         className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}
       >
