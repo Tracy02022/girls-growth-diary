@@ -6,12 +6,14 @@ import { cn } from '@/lib/utils';
 interface CalendarProps extends DayPickerSingleProps {
   className?: string;
   disabled?: (date: Date) => boolean;
+  month?: Date; // 👈 添加 month prop
 }
 
-export function Calendar({ className, ...props }: CalendarProps) {
+export function Calendar({ className, month, ...props }: CalendarProps) {
   return (
     <DayPicker
       className={cn('rounded-xl border p-4 shadow-sm bg-white', className)}
+      month={month}
       {...props}
     />
   );
