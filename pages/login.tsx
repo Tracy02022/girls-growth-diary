@@ -81,6 +81,9 @@ export default function LoginPage() {
             Don’t have an account?{' '}
             <a href="/register" className="text-blue-200 underline hover:text-blue-400">Sign up</a>
           </p>
+          <p className="text-sm text-center mt-2 text-purple-600 hover:underline cursor-pointer" onClick={() => router.push('/forgot-password')}>
+            Forgot Password?
+        </p>
         </motion.div>
       </div>
     </>
