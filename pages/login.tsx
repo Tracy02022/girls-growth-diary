@@ -19,11 +19,15 @@ export default function LoginPage() {
   const router = useRouter()
 
   const handleLogin = async () => {
+    console.log('📨 Start login')
     setError('')
     try {
-      await signInWithEmailAndPassword(auth, email, password)
-      router.push('/')
+      console.log('📨 Calling signInWithEmailAndPassword...')
+      const result = await signInWithEmailAndPassword(auth, email, password)
+      console.log('✅ Login success:', result.user)
+      window.location.href = '/'
     } catch (err: any) {
+      console.error('❌ Login failed:', error)
       setError('Login failed. Please check your credentials.')
     }
   }

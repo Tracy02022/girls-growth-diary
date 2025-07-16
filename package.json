@@ -8,6 +8,9 @@
     "start": "next start"
   },
   "dependencies": {
+    "@capacitor/cli": "^7.4.2",
+    "@capacitor/core": "^7.4.2",
+    "@capacitor/ios": "^7.4.2",
     "@tailwindcss/forms": "^0.5.10",
     "@uiw/react-heat-map": "^1.4.7",
     "@vercel/speed-insights": "^1.2.0",
