@@ -1,5 +1,5 @@
 import { initializeApp, getApps } from 'firebase/app'
-import { getAuth , setPersistence, browserLocalPersistence} from 'firebase/auth'
+import { getAuth, setPersistence, browserLocalPersistence, indexedDBLocalPersistence } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 import { getStorage } from 'firebase/storage'
 
@@ -17,8 +17,11 @@ const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0
 const auth = getAuth(app)
 export const db = getFirestore(app)
 export const storage = getStorage(app)
+
 if (typeof window !== 'undefined') {
-  setPersistence(auth, browserLocalPersistence).catch(console.error)
+  const isCapacitor = window.location.protocol === 'capacitor:'
+  const persistence = isCapacitor ? indexedDBLocalPersistence : browserLocalPersistence
+  setPersistence(auth, persistence).catch(console.error)
 }
 
 export { auth }

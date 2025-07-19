@@ -1,5 +1,6 @@
 // pages/wishes.tsx (enhanced with animation)
 import { useEffect, useState } from 'react'
+import LayoutWithNav from '@/components/AvatarDropdownLayout'
 import {
   collection,
   addDoc,
@@ -209,13 +210,14 @@ export default function WishesPage() {
   const completed = wishes.filter((w) => w.isDone)
 
   return (
+    <LayoutWithNav>
     <div
       className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
     >
-      <div className="absolute top-4 right-4 z-20">
+      {/* <div className="absolute top-4 right-4 z-20">
         <UserAvatar />
-      </div>
-      <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
+      </div> */}
+      {/* <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
         {navItems.map((item) => (
           <a
             key={item.name}
@@ -227,7 +229,7 @@ export default function WishesPage() {
             {item.name}
           </a>
         ))}
-      </nav>
+      </nav> */}
       <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
         🌠 Wish List
       </h1>
@@ -335,5 +337,6 @@ export default function WishesPage() {
         </div>
       </div>
     </div>
+    </LayoutWithNav>
   )
 }

@@ -8,6 +8,7 @@ import { Tooltip } from 'react-tooltip'
 import { Quicksand, Dancing_Script } from 'next/font/google'
 import { useRouter } from 'next/router'
 import UserAvatar from '@/components/UserAvatar'
+import LayoutWithNav from '@/components/AvatarDropdownLayout'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -88,10 +89,11 @@ export default function MoodHeatmapPage() {
   }))
 
   return (
+    <LayoutWithNav>
     <div
       className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
     >
-      <div className="absolute top-4 right-4 z-20">
+      {/* <div className="absolute top-4 right-4 z-20">
         <UserAvatar />
       </div>
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
@@ -105,7 +107,7 @@ export default function MoodHeatmapPage() {
             {item.name}
           </a>
         ))}
-      </nav>
+      </nav> */}
       <h1
         className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}
       >
@@ -155,5 +157,6 @@ export default function MoodHeatmapPage() {
         </div>
       </div>
     </div>
+    </LayoutWithNav>
   )
 }

@@ -4,6 +4,7 @@ import { db, auth } from '../lib/firebase'
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
 import { onAuthStateChanged } from 'firebase/auth'
 import { Line, Bar } from 'react-chartjs-2'
+import LayoutWithNav from '@/components/AvatarDropdownLayout'
 import {
   Chart as ChartJS,
   LineElement,
@@ -123,10 +124,11 @@ export default function ChartsPage() {
   const ChartComponent = chartType === 'line' ? Line : Bar
 
   return (
+    <LayoutWithNav>
     <div
       className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
     >
-      <div className="absolute top-4 right-4 z-20">
+      {/* <div className="absolute top-4 right-4 z-20">
         <UserAvatar />
       </div>      
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
@@ -141,7 +143,7 @@ export default function ChartsPage() {
             {item.name}
           </a>
         ))}
-      </nav> 
+      </nav>  */}
       <h1 className={`text-3xl font-bold mb-4 text-center text-purple-700 ${dancingScript.className}`}>
         📊 Body Fat / Weight Trend
       </h1>
@@ -178,5 +180,6 @@ export default function ChartsPage() {
         </a>
       </div>
     </div>
+    </LayoutWithNav>
   )
 }

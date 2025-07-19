@@ -1,6 +1,7 @@
 // Enhanced FatLog Page with collapsible history section
 import { useEffect, useState } from 'react'
 import { db, auth } from '../lib/firebase'
+import LayoutWithNav from '@/components/AvatarDropdownLayout'
 import {
   collection,
   addDoc,
@@ -108,10 +109,11 @@ export default function FatLogPage() {
   }
 
   return (
+    <LayoutWithNav>
     <div
       className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
     >
-      <div className="absolute top-4 right-4 z-20">
+       {/* <div className="absolute top-4 right-4 z-20">
         <UserAvatar />
       </div>
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
@@ -125,7 +127,7 @@ export default function FatLogPage() {
             {item.name}
           </a>
         ))}
-      </nav>
+      </nav>  */}
       <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
         📉 Body Fat Log
       </h1>
@@ -251,5 +253,6 @@ export default function FatLogPage() {
         </a>
       </div>
     </div>
+    </LayoutWithNav>
   )
 }
