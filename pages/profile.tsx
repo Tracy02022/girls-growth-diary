@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { doc, getDoc, setDoc } from 'firebase/firestore'
-import { onAuthStateChanged, sendPasswordResetEmail } from 'firebase/auth'
-import { auth, db } from '@/lib/firebase'
+import { db } from '@/lib/firebase'
 import { quicksand, dancingScript } from '@/lib/fonts'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -21,12 +20,14 @@ export default function ProfilePage() {
   const router = useRouter()
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) {
-        setUserId(user.uid)
-        setEmail(user.email || '')
+    const uid = localStorage.getItem('userId')
+    const storedEmail = localStorage.getItem('email')
+    if (uid) {
+      setUserId(uid)
+      setEmail(storedEmail || '')
 
-        const docRef = doc(db, 'profiles', user.uid)
+      const loadProfile = async () => {
+        const docRef = doc(db, 'profiles', uid)
         const docSnap = await getDoc(docRef)
         if (docSnap.exists()) {
           const data = docSnap.data()
@@ -34,13 +35,12 @@ export default function ProfilePage() {
           setPhotoDataUrl(data.photoBase64 || null)
           setGender(data.gender || '')
         }
-      } else {
-        router.push('/login')
       }
-    })
-
-    return () => unsub()
-  }, [])
+      loadProfile()
+    } else {
+      router.push('/login.html')
+    }
+  }, [router])
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -72,8 +72,24 @@ export default function ProfilePage() {
 
   const handleResetPassword = async () => {
     if (!email) return
-    await sendPasswordResetEmail(auth, email)
-    alert('Password reset email sent.')
+    try {
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '<your-key>'
+      const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          requestType: 'PASSWORD_RESET',
+          email,
+        }),
+      })
+      const result = await response.json()
+      if (!response.ok) {
+        throw new Error(result.error?.message || 'Failed to send reset email')
+      }
+      alert('Password reset email sent.')
+    } catch (err: any) {
+      alert('Failed to send reset email: ' + err.message)
+    }
   }
 
   return (

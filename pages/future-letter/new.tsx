@@ -13,12 +13,11 @@ import { format, isBefore, startOfDay, parseISO } from 'date-fns'
 import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { quicksand, dancingScript } from '@/lib/fonts'
-import { db, auth } from '@/lib/firebase'
+import { db } from '@/lib/firebase'
 import { addDoc, collection, query, getDocs, where } from 'firebase/firestore'
-import { onAuthStateChanged } from 'firebase/auth'
 import { useRouter } from 'next/router'
 import { useSearchParams } from 'next/navigation'
-import UserAvatar from '@/components/UserAvatar'
+import LayoutWithNav from '@/components/AvatarDropdownLayout'
 
 export default function FutureLetterPage() {
     const [title, setTitle] = useState('')
@@ -32,18 +31,16 @@ export default function FutureLetterPage() {
     const wishIdFromQuery = searchParams?.get('wishId')
 
     // 获取当前用户
-    useEffect(() => {
-        const unsub = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUserId(user.uid)
-            } else {
-                if (typeof window !== 'undefined') {
-                    window.location.href = '/login'
-                }
-            }
-        })
-        return () => unsub()
-    }, [])
+  useEffect(() => {
+    const uid = localStorage.getItem('userId')
+    if (uid) {
+        setUserId(uid)
+    } else {
+        if (typeof window !== 'undefined') {
+            window.location.href = '/login.html'
+        }
+    }
+}, [])
 
     useEffect(() => {
         if (!userId || !wishIdFromQuery) return
@@ -112,12 +109,13 @@ export default function FutureLetterPage() {
     ]
 
     return (
+        <LayoutWithNav>
         <div className={`min-h-screen bg-[#f2eafa] bg-no-repeat bg-top-right px-4 py-8 ${quicksand.className}`}>
-            <div className="absolute top-4 right-4 z-20">
+            {/* <div className="absolute top-4 right-4 z-20">
                 <UserAvatar />
             </div>
             {/* 导航栏 */}
-            <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
+            {/* <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
                 {navItems.map((item) => (
                     <a
                         key={item.name}
@@ -128,7 +126,7 @@ export default function FutureLetterPage() {
                         {item.name}
                     </a>
                 ))}
-            </nav>                 
+            </nav>  */}
             <h1 className={cn("text-3xl font-bold text-center text-purple-600 mb-6", dancingScript.className)}>
                 💌 Future Letter
             </h1>
@@ -205,5 +203,6 @@ export default function FutureLetterPage() {
                 </div>
             </div>
         </div>
+        </LayoutWithNav>
     )
 }

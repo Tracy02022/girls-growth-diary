@@ -1,21 +1,15 @@
 import { useEffect } from 'react'
-import { auth } from '../lib/firebase'
 
 export default function LogoutPage() {
   useEffect(() => {
     console.log('🔁 Logout start')
 
-    window.location.replace('/login.html')
+    // 清除本地存储中的用户信息（UID, token等）
+    localStorage.removeItem('userId')
+    localStorage.removeItem('token')
 
-    setTimeout(() => {
-      auth.signOut()
-        .then(() => {
-          console.log('✅ Sign out success')
-        })
-        .catch((err) => {
-          console.error('❌ Sign out failed:', err)
-        })
-    }, 500) 
+
+    window.location.replace('/login.html')
   }, [])
 
   return (

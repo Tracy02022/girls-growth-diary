@@ -1,8 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { sendPasswordResetEmail } from 'firebase/auth'
-import { auth } from '@/lib/firebase'
 import { useRouter } from 'next/router'
 import { toast } from 'sonner'
 
@@ -12,11 +10,28 @@ export default function ForgotPasswordPage() {
 
   const handleReset = async () => {
     try {
-      await sendPasswordResetEmail(auth, email)
+      const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '<your-api-key>'
+      const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          requestType: 'PASSWORD_RESET',
+          email: email,
+        }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.error?.message || 'Failed to send reset email')
+      }
+
       toast.success('Reset email sent. Please check your inbox.')
-      router.push('/login')
+      router.push('/login.html')
     } catch (error: any) {
-      toast.error(error.message)
+      toast.error(error.message || 'Something went wrong.')
     }
   }
 

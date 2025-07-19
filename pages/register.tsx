@@ -1,7 +1,4 @@
-
 import { useState } from 'react'
-import { createUserWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../lib/firebase'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import Particles from 'react-tsparticles'
@@ -10,6 +7,31 @@ import { Engine } from 'tsparticles-engine'
 
 const particlesInit = async (engine: Engine) => {
   await loadFull(engine)
+}
+
+const registerWithEmailPassword = async (email: string, password: string) => {
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '<your-api-key>'
+  const url = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      returnSecureToken: true
+    })
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(data.error?.message || 'Registration failed')
+  }
+
+  return data // 包含 idToken, localId, email
 }
 
 export default function RegisterPage() {
@@ -21,9 +43,16 @@ export default function RegisterPage() {
   const handleRegister = async () => {
     setError('')
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
+      const data = await registerWithEmailPassword(email, password)
+
+      // 存储登录信息
+      localStorage.setItem('userId', data.localId)
+      localStorage.setItem('token', data.idToken)
+      localStorage.setItem('email', data.email)
+
       router.push('/wishes')
     } catch (err: any) {
+      console.error('❌ Register failed:', err.message)
       setError('Registration failed. Please check your input.')
     }
   }
@@ -79,7 +108,7 @@ export default function RegisterPage() {
           </motion.button>
           <p className="text-sm text-center text-white mt-5">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-200 underline hover:text-blue-400">Login</a>
+            <a href="/login.html" className="text-blue-200 underline hover:text-blue-400">Login</a>
           </p>
         </motion.div>
       </div>

@@ -2,10 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import { collection, getDocs, query, where, orderBy, doc, deleteDoc } from 'firebase/firestore'
-import { onAuthStateChanged } from 'firebase/auth'
-import { useRouter } from 'next/router'
 import { format } from 'date-fns'
-import { db, auth } from '@/lib/firebase'
+import { db } from '@/lib/firebase'
 import { quicksand, dancingScript } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import { toast } from 'sonner'
@@ -29,14 +27,12 @@ export default function FutureLetterListPage() {
     const pageSize = 3
 
     useEffect(() => {
-        const unsub = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setUserId(user.uid)
-            } else {
-                window.location.href = '/login'
-            }
-        })
-        return () => unsub()
+        const uid = localStorage.getItem('userId')
+        if (uid) {
+            setUserId(uid)
+        } else {
+            window.location.href = '/login.html'
+        }
     }, [])
 
     const fetchLetters = async () => {
@@ -200,7 +196,7 @@ export default function FutureLetterListPage() {
 
             <div className="text-center mt-6">
                 <a
-                    href="/future-letter/new"
+                    href="/future-letter/new.html"
                     className="text-purple-600 underline text-sm hover:text-purple-800"
                 >
                     🔙 Back to Write Future Letters

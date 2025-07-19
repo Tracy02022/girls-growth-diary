@@ -1,7 +1,4 @@
-
 import { useState } from 'react'
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { auth } from '../lib/firebase'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import Particles from 'react-tsparticles'
@@ -12,6 +9,31 @@ const particlesInit = async (engine: Engine) => {
   await loadFull(engine)
 }
 
+const loginWithEmailPassword = async (email: string, password: string) => {
+  const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '<your-fallback-key>'
+  const url = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`
+
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      email,
+      password,
+      returnSecureToken: true
+    })
+  })
+
+  const data = await res.json()
+
+  if (!res.ok) {
+    throw new Error(data.error?.message || 'Login failed')
+  }
+
+  return data
+}
+
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -19,15 +41,18 @@ export default function LoginPage() {
   const router = useRouter()
 
   const handleLogin = async () => {
-    console.log('📨 Start login')
+    console.log('📨 Start login with REST API')
     setError('')
     try {
-      console.log('📨 Calling signInWithEmailAndPassword...')
-      const result = await signInWithEmailAndPassword(auth, email, password)
-      console.log('✅ Login success:', result.user)
+      const data = await loginWithEmailPassword(email, password)
+      console.log('✅ Login success:', data)
+
+      localStorage.setItem('token', data.idToken)
+      localStorage.setItem('userId', data.localId)
+
       window.location.href = '/'
     } catch (err: any) {
-      console.error('❌ Login failed:', error)
+      console.error('❌ Login failed:', err.message)
       setError('Login failed. Please check your credentials.')
     }
   }
@@ -83,11 +108,11 @@ export default function LoginPage() {
           </motion.button>
           <p className="text-sm text-center text-white mt-5">
             Don’t have an account?{' '}
-            <a href="/register" className="text-blue-200 underline hover:text-blue-400">Sign up</a>
+            <a href="/register.html" className="text-blue-200 underline hover:text-blue-400">Sign up</a>
           </p>
-          <p className="text-sm text-center mt-2 text-purple-600 hover:underline cursor-pointer" onClick={() => router.push('/forgot-password')}>
+          <p className="text-sm text-center mt-2 text-purple-300 hover:underline cursor-pointer" onClick={() => router.push('/forgot-password')}>
             Forgot Password?
-        </p>
+          </p>
         </motion.div>
       </div>
     </>

@@ -1,5 +1,6 @@
 // pages/wishes.tsx (enhanced with animation)
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import LayoutWithNav from '@/components/AvatarDropdownLayout'
 import {
   collection,
@@ -13,12 +14,10 @@ import {
   deleteDoc,
   writeBatch,
 } from 'firebase/firestore'
-import { db, auth } from '../lib/firebase'
-import { onAuthStateChanged } from 'firebase/auth'
+import { db } from '../lib/firebase'
 import { differenceInCalendarDays, parseISO } from 'date-fns'
 import { Quicksand, Dancing_Script } from 'next/font/google'
 import { motion, AnimatePresence } from 'framer-motion'
-import UserAvatar from '@/components/UserAvatar'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -43,6 +42,7 @@ export default function WishesPage() {
   const [error, setError] = useState('')
   const [showPending, setShowPending] = useState(true)
   const [showCompleted, setShowCompleted] = useState(true)
+  const router = useRouter()
   const navItems = [
     { name: 'Home', href: '/' },
     { name: 'Wishes', href: '/wishes' },
@@ -54,14 +54,12 @@ export default function WishesPage() {
   ];
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid)
-      } else {
-        window.location.href = '/login'
-      }
-    })
-    return () => unsubscribe()
+    const uid = localStorage.getItem('userId')
+    if (uid) {
+      setUserId(uid)
+    } else {
+      window.location.href = '/login.html'
+    }
   }, [])
 
   useEffect(() => {
@@ -190,8 +188,7 @@ export default function WishesPage() {
                   Mark Done
                 </button>
                 <button
-                  onClick={() => window.location.href = `/future-letter/new?wishId=${wish.id}`}
-                  className="hover:underline"
+                  onClick={() => router.push(`/future-letter/new?wishId=${wish.id}`)} className="hover:underline"
                 >
                   ✉️ Write Letter
                 </button>
@@ -211,13 +208,13 @@ export default function WishesPage() {
 
   return (
     <LayoutWithNav>
-    <div
-      className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
-    >
-      {/* <div className="absolute top-4 right-4 z-20">
+      <div
+        className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
+      >
+        {/* <div className="absolute top-4 right-4 z-20">
         <UserAvatar />
       </div> */}
-      {/* <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
+        {/* <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
         {navItems.map((item) => (
           <a
             key={item.name}
@@ -230,113 +227,113 @@ export default function WishesPage() {
           </a>
         ))}
       </nav> */}
-      <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
-        🌠 Wish List
-      </h1>
+        <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
+          🌠 Wish List
+        </h1>
 
-      <div className="max-w-xl mx-auto space-y-4">
-        <input
-          type="text"
-          placeholder="Wish Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          maxLength={20}
-          className="w-full border px-3 py-2 rounded-xl"
-        />
-        {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
-        <p className="text-sm text-gray-400 text-right">{title.length}/20</p>
-        <textarea
-          placeholder="Description (optional)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          maxLength={100}
-          className="w-full border px-3 py-2 rounded-xl"
-        />
-        <p className="text-sm text-gray-400 text-right">{description.length}/100</p>
-        <input
-          type="date"
-          value={targetDate}
-          onChange={(e) => setTargetDate(e.target.value)}
-          className="w-full border px-3 py-2 rounded-xl"
-        />
-        <button
-          onClick={addWish}
-          className="w-full bg-purple-600 text-white py-2 rounded-xl hover:bg-purple-700"
-        >
-          Add Wish
-        </button>
+        <div className="max-w-xl mx-auto space-y-4">
+          <input
+            type="text"
+            placeholder="Wish Title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            maxLength={20}
+            className="w-full border px-3 py-2 rounded-xl"
+          />
+          {error && <p className="text-red-600 text-sm mt-1">{error}</p>}
+          <p className="text-sm text-gray-400 text-right">{title.length}/20</p>
+          <textarea
+            placeholder="Description (optional)"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            maxLength={100}
+            className="w-full border px-3 py-2 rounded-xl"
+          />
+          <p className="text-sm text-gray-400 text-right">{description.length}/100</p>
+          <input
+            type="date"
+            value={targetDate}
+            onChange={(e) => setTargetDate(e.target.value)}
+            className="w-full border px-3 py-2 rounded-xl"
+          />
+          <button
+            onClick={addWish}
+            className="w-full bg-purple-600 text-white py-2 rounded-xl hover:bg-purple-700"
+          >
+            Add Wish
+          </button>
 
-        {selectedIds.length > 0 && (
-          <div className="flex gap-4 mt-6">
-            <button
-              onClick={markSelectedDone}
-              className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600"
-            >
-              Mark Selected Done
-            </button>
-            <button
-              onClick={deleteSelected}
-              className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600"
-            >
-              Delete Selected
-            </button>
-          </div>
-        )}
+          {selectedIds.length > 0 && (
+            <div className="flex gap-4 mt-6">
+              <button
+                onClick={markSelectedDone}
+                className="bg-green-500 text-white px-4 py-2 rounded-xl hover:bg-green-600"
+              >
+                Mark Selected Done
+              </button>
+              <button
+                onClick={deleteSelected}
+                className="bg-red-500 text-white px-4 py-2 rounded-xl hover:bg-red-600"
+              >
+                Delete Selected
+              </button>
+            </div>
+          )}
 
 
-        {/* Collapsible lists with animation */}
-        <div className="mt-10 space-y-6">
-          <div>
-            <p className="mt-2 text-sm text-gray-600">
-              Add a future letter to remind or encourage yourself for each wish
-            </p>
-            <h2
-              className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
-              onClick={() => setShowPending(!showPending)}
-            >
-              <span className={`transform transition-transform ${showPending ? 'rotate-90' : ''}`}>▶</span>
-              🟣 Pending Wishes
-            </h2>
-            <AnimatePresence>
-              {showPending && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="max-h-[450px] overflow-y-auto space-y-4"
-                >
-                  {uncompleted.length === 0 && <p className="text-gray-500">No pending wishes</p>}
-                  {uncompleted.map(renderWish)}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
+          {/* Collapsible lists with animation */}
+          <div className="mt-10 space-y-6">
+            <div>
+              <p className="mt-2 text-sm text-gray-600">
+                Add a future letter to remind or encourage yourself for each wish
+              </p>
+              <h2
+                className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
+                onClick={() => setShowPending(!showPending)}
+              >
+                <span className={`transform transition-transform ${showPending ? 'rotate-90' : ''}`}>▶</span>
+                🟣 Pending Wishes
+              </h2>
+              <AnimatePresence>
+                {showPending && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="max-h-[450px] overflow-y-auto space-y-4"
+                  >
+                    {uncompleted.length === 0 && <p className="text-gray-500">No pending wishes</p>}
+                    {uncompleted.map(renderWish)}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
 
-          <div>
-            <h2
-              className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
-              onClick={() => setShowCompleted(!showCompleted)}
-            >
-              <span className={`transform transition-transform ${showCompleted ? 'rotate-90' : ''}`}>▶</span>
-              ✅ Completed Wishes
-            </h2>
-            <AnimatePresence>
-              {showCompleted && (
-                <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="max-h-[450px] overflow-y-auto space-y-4"
-                >
-                  {completed.length === 0 && <p className="text-gray-500">No completed wishes</p>}
-                  {completed.map(renderWish)}
-                </motion.div>
-              )}
-            </AnimatePresence>
+            <div>
+              <h2
+                className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
+                onClick={() => setShowCompleted(!showCompleted)}
+              >
+                <span className={`transform transition-transform ${showCompleted ? 'rotate-90' : ''}`}>▶</span>
+                ✅ Completed Wishes
+              </h2>
+              <AnimatePresence>
+                {showCompleted && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    className="max-h-[450px] overflow-y-auto space-y-4"
+                  >
+                    {completed.length === 0 && <p className="text-gray-500">No completed wishes</p>}
+                    {completed.map(renderWish)}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
         </div>
       </div>
-    </div>
     </LayoutWithNav>
   )
 }

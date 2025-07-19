@@ -1,8 +1,7 @@
 // pages/charts.tsx (Enhanced with unit toggle + bar/line switch)
 import { useEffect, useState } from 'react'
-import { db, auth } from '../lib/firebase'
+import { db } from '../lib/firebase'
 import { collection, query, where, orderBy, getDocs } from 'firebase/firestore'
-import { onAuthStateChanged } from 'firebase/auth'
 import { Line, Bar } from 'react-chartjs-2'
 import LayoutWithNav from '@/components/AvatarDropdownLayout'
 import {
@@ -16,7 +15,6 @@ import {
   Tooltip,
 } from 'chart.js'
 import { Quicksand, Dancing_Script } from 'next/font/google'
-import UserAvatar from '@/components/UserAvatar'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -46,14 +44,12 @@ export default function ChartsPage() {
   ]
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid)
-      } else {
-        window.location.href = '/login'
-      }
-    })
-    return () => unsubscribe()
+    const uid = localStorage.getItem('userId')
+    if (uid) {
+      setUserId(uid)
+    } else {
+      window.location.href = '/login.html'
+    }
   }, [])
 
   useEffect(() => {
@@ -125,10 +121,10 @@ export default function ChartsPage() {
 
   return (
     <LayoutWithNav>
-    <div
-      className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
-    >
-      {/* <div className="absolute top-4 right-4 z-20">
+      <div
+        className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
+      >
+        {/* <div className="absolute top-4 right-4 z-20">
         <UserAvatar />
       </div>      
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
@@ -144,42 +140,42 @@ export default function ChartsPage() {
           </a>
         ))}
       </nav>  */}
-      <h1 className={`text-3xl font-bold mb-4 text-center text-purple-700 ${dancingScript.className}`}>
-        📊 Body Fat / Weight Trend
-      </h1>
+        <h1 className={`text-3xl font-bold mb-4 text-center text-purple-700 ${dancingScript.className}`}>
+          📊 Body Fat / Weight Trend
+        </h1>
 
-      <div className="max-w-3xl mx-auto mb-4 flex flex-col sm:flex-row justify-center items-center gap-4">
-        <button
-          onClick={() => setUnit(unit === 'lb' ? 'kg' : 'lb')}
-          className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 text-sm"
-        >
-          Switch to {unit === 'lb' ? 'kg' : 'lb'}
-        </button>
-        <button
-          onClick={() => setChartType(chartType === 'line' ? 'bar' : 'line')}
-          className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 text-sm"
-        >
-          Switch to {chartType === 'line' ? 'Bar' : 'Line'} Chart
-        </button>
-      </div>
+        <div className="max-w-3xl mx-auto mb-4 flex flex-col sm:flex-row justify-center items-center gap-4">
+          <button
+            onClick={() => setUnit(unit === 'lb' ? 'kg' : 'lb')}
+            className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 text-sm"
+          >
+            Switch to {unit === 'lb' ? 'kg' : 'lb'}
+          </button>
+          <button
+            onClick={() => setChartType(chartType === 'line' ? 'bar' : 'line')}
+            className="bg-purple-600 text-white px-4 py-1 rounded hover:bg-purple-700 text-sm"
+          >
+            Switch to {chartType === 'line' ? 'Bar' : 'Line'} Chart
+          </button>
+        </div>
 
-      <div className="max-w-3xl mx-auto">
-        {logs.length === 0 ? (
-          <p className="text-center text-gray-500">No logs found. Please add entries first.</p>
-        ) : (
-          <ChartComponent data={chartData} options={chartOptions} />
-        )}
-      </div>
+        <div className="max-w-3xl mx-auto">
+          {logs.length === 0 ? (
+            <p className="text-center text-gray-500">No logs found. Please add entries first.</p>
+          ) : (
+            <ChartComponent data={chartData} options={chartOptions} />
+          )}
+        </div>
 
-      <div className="text-center mt-10">
-        <a
-          href="/mood-heatmap"
-          className="text-purple-600 underline text-sm hover:text-purple-800"
-        >
-          🔥 View Mood Heatmap
-        </a>
+        <div className="text-center mt-10">
+          <a
+            href="/mood-heatmap.html"
+            className="text-purple-600 underline text-sm hover:text-purple-800"
+          >
+            🔥 View Mood Heatmap
+          </a>
+        </div>
       </div>
-    </div>
     </LayoutWithNav>
   )
 }

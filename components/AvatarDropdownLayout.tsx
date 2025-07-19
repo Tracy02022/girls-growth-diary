@@ -12,7 +12,7 @@ export default function AvatarDropdownLayout({ children }: { children: React.Rea
       className={`relative min-h-screen bg-[#f2eafa] px-4 py-8 ${quicksand.className}`}
     >
       {/* 顶部头像与下拉菜单 */}
-      <div className="absolute top-4 right-4 z-50">
+      <div className="absolute top-8 right-5 z-50">
         <img
           src="/icons/default-avatar.png"
           alt="avatar"
@@ -26,6 +26,7 @@ export default function AvatarDropdownLayout({ children }: { children: React.Rea
             <Link href="/log" className="block" onClick={() => setOpen(false)}>Body Fat Log</Link>
             <Link href="/mood-heatmap" className="block" onClick={() => setOpen(false)}>Mood Heatmap</Link>
             <Link href="/future-letter/new" className="block" onClick={() => setOpen(false)}>Write Future Letters</Link>
+            <Link href="/profile" className="block" onClick={() => setOpen(false)}>Profile</Link>
             <Link href="/logout" className="block" onClick={() => setOpen(false)}>Logout</Link>
           </div>
         )}

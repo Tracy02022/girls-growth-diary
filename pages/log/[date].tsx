@@ -1,8 +1,7 @@
 // pages/log/[date].tsx (Styled + English)
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import { onAuthStateChanged } from 'firebase/auth'
-import { db, auth } from '../../lib/firebase'
+import { db } from '../../lib/firebase'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 import { Quicksand, Dancing_Script } from 'next/font/google'
 
@@ -37,11 +36,12 @@ export default function LogDetailPage() {
   const [userId, setUserId] = useState<string | null>(null)
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (user) => {
-      if (user) setUserId(user.uid)
-      else router.push('/login')
-    })
-    return () => unsub()
+    const uid = localStorage.getItem('userId')
+    if (uid) {
+      setUserId(uid)
+    } else {
+      router.push('/login.html')
+    }
   }, [router])
 
   useEffect(() => {
@@ -102,7 +102,7 @@ export default function LogDetailPage() {
       </div>
       <div className="text-center mt-6">
         <a
-          href="/mood-heatmap"
+          href="/mood-heatmap.html"
           className="text-purple-600 underline text-sm hover:text-purple-800"
         >
           🔙 Back to Mood Heatmap

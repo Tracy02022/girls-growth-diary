@@ -1,6 +1,6 @@
 // Enhanced FatLog Page with collapsible history section
 import { useEffect, useState } from 'react'
-import { db, auth } from '../lib/firebase'
+import { db } from '../lib/firebase'
 import LayoutWithNav from '@/components/AvatarDropdownLayout'
 import {
   collection,
@@ -10,11 +10,9 @@ import {
   where,
   orderBy,
 } from 'firebase/firestore'
-import { onAuthStateChanged } from 'firebase/auth'
 import { Quicksand, Dancing_Script } from 'next/font/google'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/router'
-import UserAvatar from '@/components/UserAvatar'
 
 const quicksand = Quicksand({ subsets: ['latin'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -54,14 +52,12 @@ export default function FatLogPage() {
   const router = useRouter()
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUserId(user.uid)
-      } else {
-        window.location.href = '/login'
-      }
-    })
-    return () => unsubscribe()
+    const uid = localStorage.getItem('userId')
+    if (uid) {
+      setUserId(uid)
+    } else {
+      window.location.href = '/login.html'
+    }
   }, [])
 
   useEffect(() => {
@@ -110,10 +106,10 @@ export default function FatLogPage() {
 
   return (
     <LayoutWithNav>
-    <div
-      className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
-    >
-       {/* <div className="absolute top-4 right-4 z-20">
+      <div
+        className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className} bg-no-repeat bg-top-right`}
+      >
+        {/* <div className="absolute top-4 right-4 z-20">
         <UserAvatar />
       </div>
       <nav className="mb-6 flex justify-center gap-6 text-sm text-purple-700 font-medium">
@@ -128,131 +124,131 @@ export default function FatLogPage() {
           </a>
         ))}
       </nav>  */}
-      <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
-        📉 Body Fat Log
-      </h1>
+        <h1 className={`text-3xl font-bold mb-6 text-center text-purple-700 ${dancingScript.className}`}>
+          📉 Body Fat Log
+        </h1>
 
-      <div className="max-w-xl mx-auto space-y-4">
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="w-full border px-3 py-2 rounded-xl"
-        />
-        <input
-          type="number"
-          step="0.1"
-          placeholder="Body Fat %"
-          value={bodyFat}
-          onChange={(e) => setBodyFat(e.target.value)}
-          className="w-full border px-3 py-2 rounded-xl"
-        />
-        <input
-          type="number"
-          step="0.1"
-          placeholder={`Weight (${unit === 'lb' ? 'lbs' : 'kg'})`}
-          value={weight}
-          onChange={(e) => setWeight(e.target.value)}
-          className="w-full border px-3 py-2 rounded-xl"
-        />
-        <div className="text-right text-sm">
-          <button
-            onClick={() => {
-              const weightVal = parseFloat(weight)
-              if (!isNaN(weightVal)) {
-                if (unit === 'lb') {
-                  setWeight((weightVal / 2.20462).toFixed(1))
-                  setUnit('kg')
+        <div className="max-w-xl mx-auto space-y-4">
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full border px-3 py-2 rounded-xl"
+          />
+          <input
+            type="number"
+            step="0.1"
+            placeholder="Body Fat %"
+            value={bodyFat}
+            onChange={(e) => setBodyFat(e.target.value)}
+            className="w-full border px-3 py-2 rounded-xl"
+          />
+          <input
+            type="number"
+            step="0.1"
+            placeholder={`Weight (${unit === 'lb' ? 'lbs' : 'kg'})`}
+            value={weight}
+            onChange={(e) => setWeight(e.target.value)}
+            className="w-full border px-3 py-2 rounded-xl"
+          />
+          <div className="text-right text-sm">
+            <button
+              onClick={() => {
+                const weightVal = parseFloat(weight)
+                if (!isNaN(weightVal)) {
+                  if (unit === 'lb') {
+                    setWeight((weightVal / 2.20462).toFixed(1))
+                    setUnit('kg')
+                  } else {
+                    setWeight((weightVal * 2.20462).toFixed(1))
+                    setUnit('lb')
+                  }
                 } else {
-                  setWeight((weightVal * 2.20462).toFixed(1))
-                  setUnit('lb')
+                  setUnit(unit === 'lb' ? 'kg' : 'lb')
                 }
-              } else {
-                setUnit(unit === 'lb' ? 'kg' : 'lb')
-              }
-            }}
-            className="text-blue-600 underline"
+              }}
+              className="text-blue-600 underline"
+            >
+              Switch to {unit === 'lb' ? 'kg' : 'lbs'}
+            </button>
+          </div>
+
+          <select
+            value={mood}
+            onChange={(e) => setMood(e.target.value)}
+            className="w-full border px-3 py-2 rounded-xl"
           >
-            Switch to {unit === 'lb' ? 'kg' : 'lbs'}
+            <option value="">Select Mood</option>
+            <option value="😊">😊 Happy</option>
+            <option value="😐">😐 Calm</option>
+            <option value="😞">😞 Down</option>
+            <option value="😡">😡 Angry</option>
+            <option value="😩">😩 Anxious</option>
+            <option value="🥳">🥳 Excited</option>
+            <option value="😴">😴 Tired</option>
+            <option value="😢">😢 Sad</option>
+          </select>
+          <textarea
+            placeholder="Note (optional)"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            className="w-full border px-3 py-2 rounded-xl"
+          ></textarea>
+          <button
+            onClick={addLog}
+            className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
+          >
+            Add Log
           </button>
         </div>
 
-        <select
-          value={mood}
-          onChange={(e) => setMood(e.target.value)}
-          className="w-full border px-3 py-2 rounded-xl"
-        >
-          <option value="">Select Mood</option>
-          <option value="😊">😊 Happy</option>
-          <option value="😐">😐 Calm</option>
-          <option value="😞">😞 Down</option>
-          <option value="😡">😡 Angry</option>
-          <option value="😩">😩 Anxious</option>
-          <option value="🥳">🥳 Excited</option>
-          <option value="😴">😴 Tired</option>
-          <option value="😢">😢 Sad</option>
-        </select>
-        <textarea
-          placeholder="Note (optional)"
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          className="w-full border px-3 py-2 rounded-xl"
-        ></textarea>
-        <button
-          onClick={addLog}
-          className="w-full bg-green-600 text-white py-2 rounded-xl hover:bg-green-700"
-        >
-          Add Log
-        </button>
+        <div className="mt-10 max-w-xl mx-auto">
+          <h2
+            className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
+            onClick={() => setShowHistory(!showHistory)}
+          >
+            <span className={`transform transition-transform ${showHistory ? 'rotate-90' : ''}`}>▶</span>
+            📜 History
+          </h2>
+          <AnimatePresence>
+            {showHistory && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: 'auto', opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                className="space-y-4 max-h-[450px] overflow-y-auto"
+              >
+                {logs.map((log) => (
+                  <motion.div
+                    key={log.id}
+                    layout
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    className="border rounded-2xl p-4 bg-white shadow"
+                  >
+                    <div className="font-semibold">📅 {log.date}</div>
+                    <div>Body Fat: {log.bodyFat}%</div>
+                    <div>
+                      Weight: {unit === 'kg' ? (log.weight / 2.20462).toFixed(1) : log.weight} {unit}
+                    </div>
+                    {log.mood && <div>Mood: {log.mood}</div>}
+                    {log.note && <div>Note: {log.note}</div>}
+                  </motion.div>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        <div className="text-center mt-10">
+          <a
+            href="/charts.html"
+            className="text-purple-600 underline text-sm hover:text-purple-800"
+          >
+            📊 View Body Fat Trends
+          </a>
+        </div>
       </div>
-
-      <div className="mt-10 max-w-xl mx-auto">
-        <h2
-          className="text-xl font-semibold mb-2 cursor-pointer flex items-center gap-2"
-          onClick={() => setShowHistory(!showHistory)}
-        >
-          <span className={`transform transition-transform ${showHistory ? 'rotate-90' : ''}`}>▶</span>
-          📜 History
-        </h2>
-        <AnimatePresence>
-          {showHistory && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              className="space-y-4 max-h-[450px] overflow-y-auto"
-            >
-              {logs.map((log) => (
-                <motion.div
-                  key={log.id}
-                  layout
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  className="border rounded-2xl p-4 bg-white shadow"
-                >
-                  <div className="font-semibold">📅 {log.date}</div>
-                  <div>Body Fat: {log.bodyFat}%</div>
-                  <div>
-                    Weight: {unit === 'kg' ? (log.weight / 2.20462).toFixed(1) : log.weight} {unit}
-                  </div>
-                  {log.mood && <div>Mood: {log.mood}</div>}
-                  {log.note && <div>Note: {log.note}</div>}
-                </motion.div>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-      <div className="text-center mt-10">
-        <a
-          href="/charts"
-          className="text-purple-600 underline text-sm hover:text-purple-800"
-        >
-          📊 View Body Fat Trends
-        </a>
-      </div>
-    </div>
     </LayoutWithNav>
   )
 }
