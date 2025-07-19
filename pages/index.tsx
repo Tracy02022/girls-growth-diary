@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { Quicksand, Dancing_Script } from 'next/font/google'
 import { useState } from 'react'
+import AvatarDropdownLayout from '@/components/AvatarDropdownLayout'
 
 const quicksand = Quicksand({ subsets: ['latin'], weight: ['400', '600', '700'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -10,6 +11,7 @@ export default function Home() {
   const [open, setOpen] = useState(false)
 
   return (
+    <AvatarDropdownLayout>
     <div
       className={`relative min-h-screen bg-[#ede9f5] ${quicksand.className}`}
       style={{
@@ -20,7 +22,7 @@ export default function Home() {
       }}
     >
       {/* 顶部头像（移动端） */}
-      <div className="absolute top-8 right-5 z-50 block md:hidden">
+      {/* <div className="absolute top-8 right-5 z-50 block md:hidden">
         <img
           src="/icons/default-avatar.png"
           alt="avatar"
@@ -38,7 +40,7 @@ export default function Home() {
             <Link href="/logout" className="block" onClick={() => setOpen(false)}>Logout</Link>
           </div>
         )}
-      </div>
+      </div> */}
 
       {/* 页面标题（通用显示） */}
       <div className="pt-8 md:pt-12 text-center z-10">
@@ -97,5 +99,6 @@ export default function Home() {
         </div>
       </section>
     </div>
+    </AvatarDropdownLayout>
   )
 }
