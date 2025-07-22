@@ -1,12 +1,14 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { collection, getDocs, query, where, orderBy } from 'firebase/firestore'
+import { collection, getDocs, query, where, orderBy, doc, deleteDoc } from 'firebase/firestore'
 import { format } from 'date-fns'
 import { db } from '@/lib/firebase'
 import { quicksand, dancingScript } from '@/lib/fonts'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import { toast } from 'sonner'
+import LayoutWithNav from '@/components/AvatarDropdownLayout'
 
 interface FutureLetter {
   id: string
@@ -61,13 +63,27 @@ export default function FutureLetterListPage() {
     if (userId) fetchLetters()
   }, [userId])
 
-  const unlockedLetters = letters.filter((l) => new Date() >= new Date(l.unlockTimestamp))
-  const lockedLetters = letters.filter((l) => new Date() < new Date(l.unlockTimestamp))
+    const unlockedLetters = letters
+        .filter((l) => new Date() >= new Date(l.unlockTimestamp))
+        .sort((a, b) => new Date(b.unlockTimestamp).getTime() - new Date(a.unlockTimestamp).getTime())
+    const lockedLetters = letters.filter((l) => new Date() < new Date(l.unlockTimestamp))
 
   const totalPages = Math.ceil(unlockedLetters.length / pageSize)
   const paginatedUnlocked = unlockedLetters.slice((page - 1) * pageSize, page * pageSize)
-
+  const handleDelete = async (letter: FutureLetter) => {
+    const confirmDelete = confirm(`Are you sure you want to delete "${letter.title}"?`)
+    if (!confirmDelete) return
+    try {
+        await deleteDoc(doc(db, 'futureLetters', letter.id))
+        setLetters(prev => prev.filter(l => l.id !== letter.id))
+        toast.success('Letter deleted')
+    } catch (err) {
+        console.error('Failed to delete letter:', err)
+        toast.error('Failed to delete letter')
+    }
+}
   return (
+    <LayoutWithNav>
     <div className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className}`}>
       <h1 className={cn('text-3xl font-bold text-center text-purple-600 mb-6', dancingScript.className)}>
         ✉️ All My Future Letters
@@ -90,6 +106,7 @@ export default function FutureLetterListPage() {
                       Created: {format(new Date(letter.createdAt), 'PPP p')}
                     </p>
                   </div>
+                  <button onClick={() => handleDelete(letter)} className="text-red-500 hover:underline">Delete</button>
                   <div className="text-right">
                     <Link href={`/future-letter/${letter.id}`} className="text-purple-600 hover:underline">
                       View
@@ -125,5 +142,6 @@ export default function FutureLetterListPage() {
         )}
       </div>
     </div>
+    </LayoutWithNav>
   )
 }
