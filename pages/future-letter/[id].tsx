@@ -79,12 +79,12 @@ export default function ViewFutureLetterPage() {
                             {letter.content}
                         </div>
 
-                        <button
+                        {/* <button
                             onClick={handleDownload}
                             className="mt-6 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-xl"
                         >
                             📥 Download Letter
-                        </button>
+                        </button> */}
                     </>
                 )}
             </div>
