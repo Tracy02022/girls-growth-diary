@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label'
 import { cn } from '@/lib/utils'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
 
 export default function ProfilePage() {
   const [userId, setUserId] = useState<string | null>(null)
@@ -42,23 +43,41 @@ export default function ProfilePage() {
     }
   }, [router])
 
-  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file || !userId) return
-
-    const reader = new FileReader()
-    reader.onloadend = async () => {
-      const base64String = reader.result as string
-      setPhotoDataUrl(base64String)
-
+  const handleUploadFromCamera = async () => {
+    const image = await Camera.getPhoto({
+      quality: 80,
+      allowEditing: false,
+      resultType: CameraResultType.DataUrl,
+      source: CameraSource.Prompt, // 可弹出选择“拍照”还是“相册”
+    })
+  
+    if (image && image.dataUrl && userId) {
+      setPhotoDataUrl(image.dataUrl)
       await setDoc(doc(db, 'profiles', userId), {
         nickname,
-        photoBase64: base64String,
+        photoBase64: image.dataUrl,
         gender,
       })
     }
-    reader.readAsDataURL(file)
   }
+
+  // const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const file = e.target.files?.[0]
+  //   if (!file || !userId) return
+
+  //   const reader = new FileReader()
+  //   reader.onloadend = async () => {
+  //     const base64String = reader.result as string
+  //     setPhotoDataUrl(base64String)
+
+  //     await setDoc(doc(db, 'profiles', userId), {
+  //       nickname,
+  //       photoBase64: base64String,
+  //       gender,
+  //     })
+  //   }
+  //   reader.readAsDataURL(file)
+  // }
 
   const handleSave = async () => {
     if (!userId) return
@@ -113,7 +132,8 @@ export default function ProfilePage() {
               </div>
             )}
           </div>
-          <input type="file" accept="image/*" onChange={handleUpload} className="text-sm text-gray-600" />
+          {/* <input type="file" accept="image/*" onChange={handleUpload} className="text-sm text-gray-600" /> */}
+          <Button onClick={handleUploadFromCamera}>📷 Upload Avatar</Button>
         </div>
 
         <div>
