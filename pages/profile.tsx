@@ -114,7 +114,12 @@ export default function ProfilePage() {
   return (
     <div className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className}`}>
       <nav className="mb-6 flex justify-end px-4 text-sm text-purple-700 font-medium">
-        <a href="/" className="hover:underline hover:text-purple-900">← Back Home</a>
+        <a
+          href="/"
+          className="inline-block text-purple-700 border border-purple-300 bg-white text-sm px-3 py-1 rounded-md shadow-sm hover:bg-purple-50"
+        >
+          ← Back Home
+        </a>
       </nav>
 
       <h1 className={cn('text-3xl font-bold text-center text-purple-600 mb-6', dancingScript.className)}>
