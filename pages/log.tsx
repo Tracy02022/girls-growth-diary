@@ -9,6 +9,8 @@ import {
   query,
   where,
   orderBy,
+  deleteDoc, 
+  doc,
 } from 'firebase/firestore'
 import { Quicksand, Dancing_Script } from 'next/font/google'
 import { motion, AnimatePresence } from 'framer-motion'
@@ -38,6 +40,19 @@ export default function FatLogPage() {
   const [mood, setMood] = useState('')
   const [note, setNote] = useState('')
   const [showHistory, setShowHistory] = useState(true)
+
+  const handleDelete = async (logId: string) => {
+    if (!logId) return
+    const confirmDelete = window.confirm('Are you sure you want to delete this log?')
+    if (!confirmDelete) return
+  
+    try {
+      await deleteDoc(doc(db, 'logs', logId))
+      setLogs((prevLogs) => prevLogs.filter((log) => log.id !== logId))
+    } catch (err) {
+      console.error('Failed to delete log:', err)
+    }
+  }
 
   const navItems = [
     { name: 'Home', href: '/' },
@@ -225,7 +240,7 @@ export default function FatLogPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="border rounded-2xl p-4 bg-white shadow"
+                    className="border rounded-2xl p-4 bg-white shadow relative"
                   >
                     <div className="font-semibold">📅 {log.date}</div>
                     <div>Body Fat: {log.bodyFat}%</div>
@@ -234,6 +249,12 @@ export default function FatLogPage() {
                     </div>
                     {log.mood && <div>Mood: {log.mood}</div>}
                     {log.note && <div>Note: {log.note}</div>}
+                    <button
+                      onClick={() => handleDelete(log.id!)}
+                      className="absolute top-2 right-2 text-red-500 hover:text-red-700 text-sm"
+                    >
+                      ❌
+                    </button>
                   </motion.div>
                 ))}
               </motion.div>
