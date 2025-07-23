@@ -31,7 +31,7 @@ interface FatLog {
 export default function FatLogPage() {
   const [userId, setUserId] = useState<string | null>(null)
   const [logs, setLogs] = useState<FatLog[]>([])
-  const [date, setDate] = useState<string>(new Date().toISOString().split('T')[0])
+  const [date, setDate] = useState<string>(new Date().toLocaleDateString('en-CA'))
   const [bodyFat, setBodyFat] = useState('')
   const [weight, setWeight] = useState('')
   const [unit, setUnit] = useState<'lb' | 'kg'>('lb')
