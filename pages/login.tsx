@@ -49,6 +49,7 @@ export default function LoginPage() {
 
       localStorage.setItem('token', data.idToken)
       localStorage.setItem('userId', data.localId)
+      localStorage.setItem('email', data.email || '') 
 
       window.location.href = '/'
     } catch (err: any) {
