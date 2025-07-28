@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { doc, getDoc, setDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { quicksand, dancingScript } from '@/lib/fonts'
 import { Input } from '@/components/ui/input'
@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 import { useRouter } from 'next/router'
 import Image from 'next/image'
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
+import { getAuth, deleteUser, EmailAuthProvider, reauthenticateWithCredential  } from 'firebase/auth'
 
 export default function ProfilePage() {
   const [userId, setUserId] = useState<string | null>(null)
@@ -111,6 +112,47 @@ export default function ProfilePage() {
     }
   }
 
+ const handleDeleteAccount = async () => {
+  if (!confirm('Are you sure you want to permanently delete your account?')) return
+
+  const userId = localStorage.getItem('userId')
+  const idToken = localStorage.getItem('token')
+  const email = localStorage.getItem('email')
+
+  if (!userId || !idToken || !email) {
+    alert('Missing user information.')
+    return
+  }
+
+  try {
+    // 1. 删除 Firestore 数据
+    await deleteDoc(doc(db, 'profiles', userId))
+
+    // 2. 调用 Firebase REST API 删除账号
+    const apiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || '<your-api-key>'
+    const res = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:delete?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ idToken }),
+    })
+
+    const result = await res.json()
+
+    if (!res.ok) {
+      throw new Error(result.error?.message || 'Failed to delete user')
+    }
+
+    // 3. 清除缓存并跳转
+    localStorage.clear()
+    alert('Account deleted.')
+    router.push('/goodbye')
+  } catch (err: any) {
+    alert('Failed to delete account: ' + err.message)
+  }
+}
+
+
+
   return (
     <div className={`min-h-screen px-4 py-8 bg-[#f2eafa] ${quicksand.className}`}>
       <nav className="mb-6 flex justify-end px-4 text-sm text-purple-700 font-medium">
@@ -174,6 +216,12 @@ export default function ProfilePage() {
           className="text-sm text-purple-600 underline hover:text-purple-800 mt-2"
         >
           🔐 Reset Password
+        </button>
+        <button
+          onClick={handleDeleteAccount}
+          className="text-sm text-red-600 underline hover:text-red-800 mt-4"
+        >
+          🗑️ Delete My Account
         </button>
       </div>
     </div>

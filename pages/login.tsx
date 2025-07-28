@@ -1,9 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { motion } from 'framer-motion'
 import Particles from 'react-tsparticles'
 import { loadFull } from 'tsparticles'
 import { Engine } from 'tsparticles-engine'
+import PrivacyConsentModal from '@/components/PrivacyConsentModal'
 
 const particlesInit = async (engine: Engine) => {
   await loadFull(engine)
@@ -57,6 +58,18 @@ export default function LoginPage() {
       setError('Login failed. Please check your credentials.')
     }
   }
+
+  const [hasConsent, setHasConsent] = useState(true)
+
+  useEffect(() => {
+    const consent = localStorage.getItem('privacyConsent')
+    setHasConsent(consent === 'true')
+  }, [])
+
+  if (!hasConsent) {
+    return <PrivacyConsentModal />
+  }
+
 
   return (
     <>

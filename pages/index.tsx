@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { Quicksand, Dancing_Script } from 'next/font/google'
 import { useState } from 'react'
 import AvatarDropdownLayout from '@/components/AvatarDropdownLayout'
+import PrivacyConsentModal from '@/components/PrivacyConsentModal'
 
 const quicksand = Quicksand({ subsets: ['latin'], weight: ['400', '600', '700'] })
 const dancingScript = Dancing_Script({ subsets: ['latin'], weight: ['700'] })
@@ -11,6 +12,8 @@ export default function Home() {
   const [open, setOpen] = useState(false)
 
   return (
+    <>
+    <PrivacyConsentModal />
     <AvatarDropdownLayout>
     <div
       className={`relative min-h-screen bg-[#ede9f5] ${quicksand.className}`}
@@ -100,5 +103,6 @@ export default function Home() {
       </section>
     </div>
     </AvatarDropdownLayout>
+    </>
   )
 }
