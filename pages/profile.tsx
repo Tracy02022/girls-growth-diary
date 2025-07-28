@@ -213,13 +213,13 @@ export default function ProfilePage() {
 
         <button
           onClick={handleResetPassword}
-          className="text-sm text-purple-600 underline hover:text-purple-800 mt-2"
+          className="block w-full text-sm text-purple-600 underline hover:text-purple-800 mt-4"
         >
           🔐 Reset Password
         </button>
         <button
           onClick={handleDeleteAccount}
-          className="text-sm text-red-600 underline hover:text-red-800 mt-4"
+          className="block w-full text-sm text-red-600 underline hover:text-red-800 mt-4"
         >
           🗑️ Delete My Account
         </button>
