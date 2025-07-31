@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">KittyTime</string>
+    <string name="title_activity_main">girls-growth-diary</string>
+    <string name="package_name">com.tracy.girlgrowthdiary</string>
+    <string name="custom_url_scheme">com.tracy.girlgrowthdiary</string>
+</resources>
